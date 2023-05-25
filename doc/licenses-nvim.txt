@@ -9,7 +9,6 @@ Insert and write license headers and/or files.
   USER COMMANDS..................................|licenses-nvim-user-commands|
   :LicenseInsert..............................................|:LicenseInsert|
   :LicenseFetch................................................|:LicenseFetch|
-  :LicenseUpdate..............................................|:LicenseUpdate|
   :LicenseWrite................................................|:LicenseWrite|
   LUA API..................................................|licenses-nvim-lua|
   Config................................................|licenses-nvim.Config|
@@ -19,7 +18,6 @@ Insert and write license headers and/or files.
   get_text............................................|licenses-nvim.get_text|
   fetch_license..................................|licenses-nvim.fetch_license|
   write_license..................................|licenses-nvim.write_license|
-  update_copyright............................|licenses-nvim.update_copyright|
   insert_header..................................|licenses-nvim.insert_header|
   setup..................................................|licenses-nvim.setup|
 
@@ -138,11 +136,6 @@ NOTE: Depends on the `curl` command.
 
 See: ~
     • |licenses-nvim.fetch_license| for the underlying lua function
-
-------------------------------------------------------------------------------
-:LicenseUpdate                                                  *:LicenseUpdate*
-
-TODO: not yet implemented
 
 ------------------------------------------------------------------------------
 :LicenseWrite {path} [{id}]                                      *:LicenseWrite*
@@ -350,15 +343,6 @@ Parameters: ~
 
 See: ~
     • |licenses-nvim.get_config|
-
-------------------------------------------------------------------------------
-update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
-
-TODO: desc
-
-Parameters: ~
-    • {bufnr} `(integer)` Buffer handle
-    • {config} `(Config)` Configuration, NOTE: copyright_holder key is required
 
 ------------------------------------------------------------------------------
 insert_header({bufnr}, {lnum}, {config})           *licenses-nvim.insert_header*

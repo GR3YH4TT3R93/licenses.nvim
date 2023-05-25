@@ -134,9 +134,6 @@
 --- NOTE: Depends on the `curl` command.
 ---@see M.fetch_license for the underlying lua function
 
----@signature :LicenseUpdate
----@text TODO: not yet implemented
-
 ---@signature :LicenseWrite :LicenseWrite {path} [{id}]
 ---@text Write text of a license with {id} to {path}. If no {id} was specified, then
 --- uses the default one from |licenses-nvim.Config|.
@@ -554,39 +551,6 @@ M.write_license = function(path, config)
         ),
         path
     )
-end
-
---- TODO: desc
----@param bufnr integer Buffer handle
----@param config Config Configuration, NOTE: copyright_holder key is required
-M.update_copyright = function(bufnr, config)
-    vim.validate({
-        bufnr = { bufnr, 'number' },
-        config = { config, 'table' },
-        copyright_holder = { config.copyright_holder, 'string' },
-    })
-
-    local copyrights = M.get_copyright_info(
-        bufnr, util.bo(bufnr, 'commentstring')
-    )
-    if not copyrights then return end
-
-    local matched_spdx = false
-    for _, cpy in ipairs(copyrights.spdx)
-    do
-        if cpy.name == config.copyright_holder
-            and (not cpy.email or cpy.email == config.email)
-        then
-            matched_spdx = true
-            -- TODO
-        end
-    end
-    print(matched_spdx)
-
-    for _, copyright in ipairs(copyrights.other)
-    do
-        -- print(vim.inspect(copyright))
-    end
 end
 
 -- XXX: more complex licenses, see: https://reuse.software/faq/#multi-licensing
