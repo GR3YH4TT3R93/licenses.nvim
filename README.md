@@ -8,4 +8,4 @@ the documentation in [doc/licenses-nvim.txt](doc/licenses-nvim.txt).
 # Issues
 
 -   mailing list: https://lists.sr.ht/~reggie/licenses.nvim
--   contact me directly: contact<at>reggie<dot>re
+-   contact me directly: `contact<at>reggie<dot>re`
