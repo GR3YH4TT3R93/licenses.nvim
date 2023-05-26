@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 def main():
     with urlopen("https://spdx.org/licenses/licenses.json") as f:
-        Path("licenses/licenses.txt").write_text(
+        Path("licenses/index.txt").write_text(
             "\n".join(
                 [v["licenseId"] for v in json.loads(f.read())["licenses"]]
             ),

@@ -24,8 +24,8 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- TODO: move licenses.txt to index.txt
--- TODO: maybe revamp how config works
+-- TODO: replace mailing list with todo
+-- TODO: telescope
 
 --- Insert and write license headers and/or files.
 ---
@@ -143,12 +143,6 @@
 --- uses the default one from |licenses-nvim.Config|.
 ---@see M.write_license for the underlying lua function
 
-local M = {}
-
-local api = vim.api
-local fn = vim.fn
-local util = require('licenses/util')
-
 ---@mod lua lua api
 --- Aside from above mentioned user commads, licenses.nvim exposes several Lua
 --- functions.
@@ -157,6 +151,12 @@ local util = require('licenses/util')
 --- is true.
 ---
 --- NOTE: This might slightly change in the future.
+
+local M = {}
+
+local api = vim.api
+local fn = vim.fn
+local util = require('licenses/util')
 
 ---@alias LicenseVars (table<string, string | fun(id: string, original: string): string>)
 ---@alias FnBool (boolean | fun(id: string): boolean)
@@ -449,7 +449,7 @@ M.get_text = function(path, cs, vars, wrap_width)
 end
 
 -- XXX: wget support
--- TODO: update licenses.txt for completion
+-- TODO: update index.txt for completion
 --- Fetch license text and header from https://spdx.org/licenses/{id}.json and save
 --- them to `stdpath("cache")`.
 ---
@@ -698,7 +698,8 @@ M.insert_header = function(bufnr, lnum, config)
         end
     end
 
-    util.try(fn.appendbufline, bufnr, lnum, lines)
+    ---@diagnostic disable-next-line: param-type-mismatch
+    fn.appendbufline(bufnr, lnum, lines)
 
     if config.write_license_to_file
     then
@@ -768,7 +769,7 @@ M.setup = function(overrides)
         {
             bang = true,
             bar = true,
-            complete = function(cmdline)
+            complete = function(_, cmdline)
                 if util.nargs(cmdline) ~= 2 then return end
 
                 local cache = util.get_cache()
@@ -796,9 +797,9 @@ M.setup = function(overrides)
         function(opts) M.fetch_license(opts.fargs[1]) end,
         {
             bar = true,
-            complete = function(cmdline)
+            complete = function(_, cmdline)
                 if util.nargs(cmdline) ~= 2 then return end
-                return fn.readfile(util.get_file('licenses.txt'))
+                return fn.readfile(util.get_file('index.txt'))
             end,
             desc = 'Fetch license from https://spdx.org/licenses.',
             nargs = 1,
