@@ -59,22 +59,35 @@ M.b = function(bufnr, name)
     return ok and res or vim.g[name]
 end
 
----@param bufnr integer
----@param name string
----@return any?
-M.bo = function(bufnr, name)
-    local ok, res = pcall(api.nvim_buf_get_option, bufnr, name)
-    return ok and res or nil
-end
-
 ---@param msg any
 M.err = function(msg)
     vim.notify('licenses.nvim: ' .. msg, vim.log.levels.ERROR)
 end
 
+---@param year string
+---@param name string
+---@param email? string
+---@return string
+M.format_spdx_copyright = function(year, name, email)
+    return string.format(
+        'SPDX-FileCopyrightText: %s %s%s',
+        year,
+        name,
+        email and ' <' .. email .. '>' or ''
+    )
+end
+
 ---@return string
 M.get_cache = function()
     return fn.stdpath('cache') .. '/licenses.nvim/'
+end
+
+---@param bufnr integer
+---@return string
+M.get_commentstring = function(bufnr)
+    local cs = api.nvim_buf_get_option(bufnr, 'commentstring')
+    if not cs:match('%%s') then cs = cs .. '%s' end
+    return cs
 end
 
 ---@param path string
@@ -94,12 +107,12 @@ M.get_val = function(v, ...)
     return v
 end
 
----@param arglead string
+-- TODO: use cursor to check if it was moved to a previous argument
 ---@param cmdline string
 ---@return integer
-M.nargs = function(arglead, cmdline)
+M.nargs = function(cmdline)
     local nargs = #M.split_words(cmdline)
-    if arglead:match('^%s*$') then nargs = nargs + 1 end
+    if cmdline:match('%s+$') then nargs = nargs + 1 end
     return nargs
 end
 

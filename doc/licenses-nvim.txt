@@ -9,6 +9,7 @@ Insert and write license headers and/or files.
   USER COMMANDS..................................|licenses-nvim-user-commands|
   :LicenseInsert..............................................|:LicenseInsert|
   :LicenseFetch................................................|:LicenseFetch|
+  :LicenseUpdate..............................................|:LicenseUpdate|
   :LicenseWrite................................................|:LicenseWrite|
   LUA API..................................................|licenses-nvim-lua|
   Config................................................|licenses-nvim.Config|
@@ -18,6 +19,7 @@ Insert and write license headers and/or files.
   get_text............................................|licenses-nvim.get_text|
   fetch_license..................................|licenses-nvim.fetch_license|
   write_license..................................|licenses-nvim.write_license|
+  update_copyright............................|licenses-nvim.update_copyright|
   insert_header..................................|licenses-nvim.insert_header|
   setup..................................................|licenses-nvim.setup|
 
@@ -136,6 +138,11 @@ NOTE: Depends on the `curl` command.
 
 See: ~
     • |licenses-nvim.fetch_license| for the underlying lua function
+
+------------------------------------------------------------------------------
+:LicenseUpdate                                                  *:LicenseUpdate*
+
+TODO: add description
 
 ------------------------------------------------------------------------------
 :LicenseWrite {path} [{id}]                                      *:LicenseWrite*
@@ -258,14 +265,14 @@ Table structure returned by |licenses-nvim.get_copyright_info|.
 Fields: ~
     • {name} `(string)` Name of copyright holder
     • {email} `(string)` Holder's email
-    • {years} `(integer[])`
+    • {years} `(string[])`
         Array with one or two years in case copyright has years separated with
-        dash, e.g. 2020-2023 turns into `{ 2020, 2023 }`
+        dash, e.g. 2020-2023 turns into `{ '2020', '2023' }`
     • {lnum} `(integer)` Line number where notice is located
 
 ------------------------------------------------------------------------------
                                               *licenses-nvim.get_copyright_info*
-get_copyright_info({bufnr}, {cs}, {l_start}, {l_end})
+get_copyright_info({bufnr}, {l_start}, {l_end})
 
 Primitive function to get copyright information.
 
@@ -283,7 +290,6 @@ SPDX tags and {other} contains all other copyrights.
 
 Parameters: ~
     • {bufnr} `(integer)` Buffer handle (0)
-    • {cs} `(string)` Commentstring, defaults to b:commentstring
     • {l_start} `(optional)` `(integer)` First line where to look (0)
     • {l_end} `(optional)` `(integer)` Last line ({l_start} + 100)
 
@@ -343,6 +349,15 @@ Parameters: ~
 
 See: ~
     • |licenses-nvim.get_config|
+
+------------------------------------------------------------------------------
+update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
+
+TODO: desc
+
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle
+    • {config} `(Config)` Configuration, NOTE: copyright_holder key is required
 
 ------------------------------------------------------------------------------
 insert_header({bufnr}, {lnum}, {config})           *licenses-nvim.insert_header*
