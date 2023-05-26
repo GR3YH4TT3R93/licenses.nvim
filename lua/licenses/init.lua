@@ -257,16 +257,40 @@ M.config = {
 ---@param overrides? Config Optional overrides
 ---@return Config
 M.get_config = function(bufnr, overrides)
-    local c = vim.tbl_deep_extend(
-        'keep',
-        overrides or {},
-        util.b(bufnr, 'licenses_nvim_config') or {},
-        M.config or {}
-    )
+    local c = {}
 
     for _, key in ipairs({ 'license', 'copyright_holder', 'email' })
     do
         c[key] = util.b(bufnr, 'licenses_nvim_' .. key) or c[key]
+    end
+
+    c = vim.tbl_deep_extend(
+        'keep',
+        overrides or {},
+        c,
+        util.b(bufnr, 'licenses_nvim_config') or {},
+        M.config or {}
+    )
+
+    c.vars = vim.tbl_extend('force', {}, c.vars or {})
+    if not c.vars.copyright
+    then
+        c.vars.copyright = function(_, original)
+            if not (c.copyright_holder or c.email)
+            then
+                return original
+            end
+
+            local copyright = os.date('%Y')
+                .. (c.copyright_holder and ' ' .. c.copyright_holder or '')
+                .. (c.email and ' ' .. c.email or '')
+
+            if original:match('^[Cc]opyright')
+            then
+                return 'Copyright (c) ' .. copyright
+            end
+            return copyright
+        end
     end
 
     if bufnr and c.remember_previous_id and c.license
@@ -487,10 +511,15 @@ M.fetch_license = function(id)
                 local i = 1
                 while lines[i] and lines[i] ~= '' do i = i + 1 end
 
-                local json = util.try(
+                local ok, json = pcall(
                     vim.fn.json_decode, vim.list_slice(lines, i + 1)
                 )
-                if not json then return end
+                if not ok
+                then
+                    util.err(json)
+                    return
+                end
+                ---@cast json table
 
                 local cache = util.get_cache()
                 fn.mkdir(cache .. 'text', 'p')
@@ -542,7 +571,7 @@ M.write_license = function(path, config)
         return
     end
 
-    util.try(
+    local ok, res = pcall(
         fn.writefile,
         M.get_text(
             license,
@@ -553,6 +582,7 @@ M.write_license = function(path, config)
         ),
         path
     )
+    if not ok then util.err(res) end
 end
 
 --- TODO: desc
@@ -655,7 +685,6 @@ M.insert_header = function(bufnr, lnum, config)
 
     local id = util.get_val(config.license)
     config = vim.tbl_map(function(v) return util.get_val(v, id) end, config)
-    util.add_copyright_var(config)
 
     local cs = util.get_commentstring(bufnr)
     local lines = {}
@@ -759,6 +788,7 @@ M.setup = function(overrides)
                 )
             end
 
+            -- FIX: inserts line even if insert_header fails
             if lnum ~= 0
             then
                 fn.appendbufline(api.nvim_get_current_buf(), lnum, '')
@@ -829,7 +859,6 @@ M.setup = function(overrides)
 
             local bufnr = api.nvim_get_current_buf()
             local config = M.get_config(bufnr, { license = opts.fargs[2] })
-            util.add_copyright_var(config)
 
             M.write_license(path, config)
         end,

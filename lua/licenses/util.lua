@@ -29,28 +29,6 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
----@param config Config
-M.add_copyright_var = function(config)
-    if config.vars.copyright then return end
-
-    config.vars.copyright = function(_, original)
-        if not (config.copyright_holder or config.email)
-        then
-            return original
-        end
-
-        local copyright = os.date('%Y')
-            .. (config.copyright_holder and ' ' .. config.copyright_holder or '')
-            .. (config.email and ' ' .. config.email or '')
-
-        if original:match('^[Cc]opyright')
-        then
-            return 'Copyright (c) ' .. copyright
-        end
-        return copyright
-    end
-end
-
 ---@param bufnr? integer
 ---@param name string
 ---@return any?
@@ -120,26 +98,6 @@ end
 ---@return string[]
 M.split_words = function(text)
     return vim.split(text, '%s+', { trimempty = true })
-end
-
----@param callback function
----@param ... any
----@return any?
-M.try = function(callback, ...)
-    local ok, res
-    if ...
-    then
-        ok, res = pcall(callback, ...)
-    else
-        ok, res = pcall(callback)
-    end
-
-    if not ok
-    then
-        M.err(res)
-    else
-        return res
-    end
 end
 
 return M
