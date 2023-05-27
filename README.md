@@ -7,7 +7,7 @@ A plugin for easily writing license files and inserting license headers.
 # Setup
 
 First install the plugin with your package manager of choice. Don't know what
-that is? Check out (Paq)[https://github.com/savq/paq-nvim].
+that is? Check out [Paq](https://github.com/savq/paq-nvim).
 
 Inside your init.lua file run the following function:
 
