@@ -29,14 +29,6 @@ local M = {}
 local api = vim.api
 local fn = vim.fn
 
----@param bufnr? integer
----@param name string
----@return any?
-M.b = function(bufnr, name)
-    local ok, res = pcall(api.nvim_buf_get_var, bufnr, name)
-    return ok and res or vim.g[name]
-end
-
 ---@param msg any
 M.err = function(msg)
     vim.notify('licenses.nvim: ' .. msg, vim.log.levels.ERROR)
@@ -83,15 +75,6 @@ end
 M.get_val = function(v, ...)
     if type(v) == 'function' then return ... and v(...) or v() end
     return v
-end
-
--- TODO: use cursor to check if it was moved to a previous argument
----@param cmdline string
----@return integer
-M.nargs = function(cmdline)
-    local nargs = #M.split_words(cmdline)
-    if cmdline:match('%s+$') then nargs = nargs + 1 end
-    return nargs
 end
 
 ---@param text string

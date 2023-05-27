@@ -9,11 +9,12 @@ licenses-nvim-lua	licenses-nvim.txt	/*licenses-nvim-lua*
 licenses-nvim-user-commands	licenses-nvim.txt	/*licenses-nvim-user-commands*
 licenses-nvim.Config	licenses-nvim.txt	/*licenses-nvim.Config*
 licenses-nvim.CpyInfo	licenses-nvim.txt	/*licenses-nvim.CpyInfo*
-licenses-nvim.fetch_license	licenses-nvim.txt	/*licenses-nvim.fetch_license*
+licenses-nvim.count_args	licenses-nvim.txt	/*licenses-nvim.count_args*
+licenses-nvim.fetch	licenses-nvim.txt	/*licenses-nvim.fetch*
 licenses-nvim.get_config	licenses-nvim.txt	/*licenses-nvim.get_config*
 licenses-nvim.get_copyright_info	licenses-nvim.txt	/*licenses-nvim.get_copyright_info*
 licenses-nvim.get_text	licenses-nvim.txt	/*licenses-nvim.get_text*
-licenses-nvim.insert_header	licenses-nvim.txt	/*licenses-nvim.insert_header*
+licenses-nvim.insert	licenses-nvim.txt	/*licenses-nvim.insert*
 licenses-nvim.setup	licenses-nvim.txt	/*licenses-nvim.setup*
 licenses-nvim.txt	licenses-nvim.txt	/*licenses-nvim.txt*
 licenses-nvim.update_copyright	licenses-nvim.txt	/*licenses-nvim.update_copyright*

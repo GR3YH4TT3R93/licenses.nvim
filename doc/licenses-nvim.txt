@@ -17,10 +17,11 @@ Insert and write license headers and/or files.
   CpyInfo..............................................|licenses-nvim.CpyInfo|
   get_copyright_info........................|licenses-nvim.get_copyright_info|
   get_text............................................|licenses-nvim.get_text|
-  fetch_license..................................|licenses-nvim.fetch_license|
-  write_license..................................|licenses-nvim.write_license|
+  insert................................................|licenses-nvim.insert|
+  fetch..................................................|licenses-nvim.fetch|
   update_copyright............................|licenses-nvim.update_copyright|
-  insert_header..................................|licenses-nvim.insert_header|
+  write_license..................................|licenses-nvim.write_license|
+  count_args........................................|licenses-nvim.count_args|
   setup..................................................|licenses-nvim.setup|
 
 ==============================================================================
@@ -126,7 +127,7 @@ contains a copyright notice, if it does then nothing is inserted and error is
 shown. This behavior can be overriden with !, i.e. `:LicenseInsert!`.
 
 See: ~
-    • |licenses-nvim.insert_header| for the underlying lua function
+    • |licenses-nvim.insert| for the underlying lua function
 
 ------------------------------------------------------------------------------
 :LicenseFetch {id}                                               *:LicenseFetch*
@@ -137,12 +138,15 @@ them to `stdpath("cache")`.
 NOTE: Depends on the `curl` command.
 
 See: ~
-    • |licenses-nvim.fetch_license| for the underlying lua function
+    • |licenses-nvim.fetch| for the underlying lua function
 
 ------------------------------------------------------------------------------
 :LicenseUpdate                                                  *:LicenseUpdate*
 
-TODO: add description
+Update year of existing copyright notices.
+
+See: ~
+    • |licenses-nvim.update_copyright| for more details
 
 ------------------------------------------------------------------------------
 :LicenseWrite {path} [{id}]                                      *:LicenseWrite*
@@ -161,8 +165,6 @@ functions.
 
 All examples in this section assume, that `local licenses = require('licenses')`
 is true.
-
-NOTE: This might slightly change in the future.
 
 ------------------------------------------------------------------------------
 Config                                                    *licenses-nvim.Config*
@@ -199,7 +201,7 @@ The values of this table should match the following signature:
 >
     string | fun(id: string, original: string): string
 <
-Although there are no variables defined by default, |licenses-nvim.insert_header|
+Although there are no variables defined by default, |licenses-nvim.get_config|
 will add the copyright variable if there already isn't one. A simplified
 example of this variable would be:
 >lua
@@ -226,7 +228,7 @@ Fields: ~
         (evaluates to true if id == 'BSD-2-Clause', 'MIT' or 'Unlicense')
     • {license} `(string | fun(): string)` Default license id (nil)
     • {remember_previous_id} `(FnBool)`
-        If true |licenses-nvim.insert_header| will set b:licenses_nvim_license to
+        If true |licenses-nvim.insert| will set b:licenses_nvim_license to
         {config.license} making it the default for specified buffer (nil)
     • {skip_lines} `(string[])`
         List of patterns to skip if at the top of buffer (nil)
@@ -319,7 +321,25 @@ Return: ~
     `(table)` License text as array of lines
 
 ------------------------------------------------------------------------------
-fetch_license({id})                                *licenses-nvim.fetch_license*
+insert({bufnr}, {lnum}, {config})                         *licenses-nvim.insert*
+
+Insert a license header on {lnum} of {bufnr}.
+
+Example:
+>lua
+    local bufnr = vim.api.nvim_get_current_buf()
+    licenses.insert(bufnr, 0, licenses.get_config(bufnr))
+<
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle
+    • {lnum} `(integer)` Line number, zero-indexed
+    • {config} `(Config)` Configuration, NOTE: license key is required
+
+See: ~
+    • |licenses-nvim.get_config|
+
+------------------------------------------------------------------------------
+fetch({id})                                                *licenses-nvim.fetch*
 
 Fetch license text and header from https://spdx.org/licenses/{id}.json and save
 them to `stdpath("cache")`.
@@ -328,6 +348,29 @@ NOTE: Depends on the `curl` command.
 
 Parameters: ~
     • {id} `(string)` SPDX License Identifier
+
+------------------------------------------------------------------------------
+update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
+
+Use |licenses-nvim.get_copyright_info| to check for copyrights and update them
+
+If a copyright notice with the same name and email as specified in config is
+found then add current year if it isn't already the case, for example if 2020
+would become 2020-{current_year}, 2020-2022 would also change the same way.
+
+If the copyright notice is using SPDX tags, but it has different name a new
+one is added above, e.g.:
+
+    `SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>`
+
+would update to:
+>
+    SPDX-FileCopyrightText: 2023 reggie <contact<at>reggie<dot>re>
+    SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>
+<
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle
+    • {config} `(Config)` Configuration, NOTE: copyright_holder key is required
 
 ------------------------------------------------------------------------------
 write_license({path}, {config})                    *licenses-nvim.write_license*
@@ -351,31 +394,13 @@ See: ~
     • |licenses-nvim.get_config|
 
 ------------------------------------------------------------------------------
-update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
-
-TODO: desc
+count_args({cmdline})                                 *licenses-nvim.count_args*
 
 Parameters: ~
-    • {bufnr} `(integer)` Buffer handle
-    • {config} `(Config)` Configuration, NOTE: copyright_holder key is required
+    • {cmdline} `(string)`
 
-------------------------------------------------------------------------------
-insert_header({bufnr}, {lnum}, {config})           *licenses-nvim.insert_header*
-
-Insert a license header on {lnum} of {bufnr}.
-
-Example:
->lua
-    local bufnr = vim.api.nvim_get_current_buf()
-    licenses.insert_header(bufnr, 0, licenses.get_config(bufnr))
-<
-Parameters: ~
-    • {bufnr} `(integer)` Buffer handle
-    • {lnum} `(integer)` Line number, zero-indexed
-    • {config} `(Config)` Configuration, NOTE: license key is required
-
-See: ~
-    • |licenses-nvim.get_config|
+Return: ~
+    `(integer)`
 
 ------------------------------------------------------------------------------
 setup({overrides})                                         *licenses-nvim.setup*

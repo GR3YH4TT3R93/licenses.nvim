@@ -24,8 +24,8 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- TODO: replace mailing list with todo
 -- TODO: telescope
+-- TODO: snippets
 
 --- Insert and write license headers and/or files.
 ---
@@ -126,17 +126,18 @@
 --- A simple check will be performed before inserting to see if the file already
 --- contains a copyright notice, if it does then nothing is inserted and error is
 --- shown. This behavior can be overriden with !, i.e. `:LicenseInsert!`.
----@see M.insert_header for the underlying lua function
+---@see M.insert for the underlying lua function
 
 ---@signature :LicenseFetch :LicenseFetch {id}
 ---@text Fetch license text and header from https://spdx.org/licenses/{id}.json and save
 --- them to `stdpath("cache")`.
 ---
 --- NOTE: Depends on the `curl` command.
----@see M.fetch_license for the underlying lua function
+---@see M.fetch for the underlying lua function
 
 ---@signature :LicenseUpdate
----@text TODO: add description
+---@text Update year of existing copyright notices.
+---@see M.update_copyright for more details
 
 ---@signature :LicenseWrite :LicenseWrite {path} [{id}]
 ---@text Write text of a license with {id} to {path}. If no {id} was specified, then
@@ -149,8 +150,6 @@
 ---
 --- All examples in this section assume, that `local licenses = require('licenses')`
 --- is true.
----
---- NOTE: This might slightly change in the future.
 
 local M = {}
 
@@ -196,7 +195,7 @@ local util = require('licenses/util')
 --- ```
 ---     string | fun(id: string, original: string): string
 --- ```
---- Although there are no variables defined by default, |licenses-nvim.insert_header|
+--- Although there are no variables defined by default, |licenses-nvim.get_config|
 --- will add the copyright variable if there already isn't one. A simplified
 --- example of this variable would be:
 --- ```lua
@@ -223,7 +222,7 @@ local util = require('licenses/util')
 --- (evaluates to true if id == 'BSD-2-Clause', 'MIT' or 'Unlicense')
 ---@field license (string | fun(): string) Default license id (nil)
 ---@field remember_previous_id FnBool
---- If true |licenses-nvim.insert_header| will set b:licenses_nvim_license to
+--- If true |licenses-nvim.insert| will set b:licenses_nvim_license to
 --- {config.license} making it the default for specified buffer (nil)
 ---@field skip_lines string[]
 --- List of patterns to skip if at the top of buffer (nil)
@@ -244,6 +243,15 @@ M.config = {
     write_license_to_file = false,
 }
 
+---@param bufnr? integer
+---@param name string
+---@return any?
+---@private
+local get_opt = function(bufnr, name)
+    local ok, res = pcall(api.nvim_buf_get_var, bufnr, name)
+    return ok and res or vim.g[name]
+end
+
 --- Get configuration for specified {bufnr}. Looks through default config,
 --- global and buffer variables, and {overrides} to get the final config. If
 --- {bufnr} is nil, then buffer variables are ignored.
@@ -261,17 +269,18 @@ M.get_config = function(bufnr, overrides)
 
     for _, key in ipairs({ 'license', 'copyright_holder', 'email' })
     do
-        c[key] = util.b(bufnr, 'licenses_nvim_' .. key) or c[key]
+        c[key] = get_opt(bufnr, 'licenses_nvim_' .. key) or c[key]
     end
 
     c = vim.tbl_deep_extend(
         'keep',
         overrides or {},
         c,
-        util.b(bufnr, 'licenses_nvim_config') or {},
+        get_opt(bufnr, 'licenses_nvim_config') or {},
         M.config or {}
     )
 
+    -- avoid passing by reference
     c.vars = vim.tbl_extend('force', {}, c.vars or {})
     if not c.vars.copyright
     then
@@ -310,30 +319,6 @@ end
 --- dash, e.g. 2020-2023 turns into `{ '2020', '2023' }`
 ---@field lnum integer Line number where notice is located
 
----@param text string
----@return CpyInfo
----@private
-local parse_copyright_text = function(text)
-    text = vim.trim(text):gsub('^[Cc]opyright%s+', '')
-    local year1, year2, name, email
-    for _, part in ipairs(util.split_words(text))
-    do
-        if not email and (part:match('^%S+@%S+$') or part:match('^%S+<at>%S+$'))
-        then
-            email = part:gsub('^<', ''):gsub('>$', '')
-        elseif not year1 and part:match('^%d%d+%-?%d%d*$')
-        then
-            -- %d%d+ matches >=2 digits, 2 is not a year, but 02 might be 2002
-            year1 = part:match('^%d%d+')
-            year2 = part:match('%-(%d%d+)$')
-        else
-            name = (name and name .. ' ' or '') .. part
-        end
-    end
-
-    return { name = name, email = email, years = { year1, year2 } }
-end
-
 -- XXX: https://wiki.debian.org/CopyrightReviewTools#Command-line_tools_in_Debian
 -- TODO: multiple licenses
 -- TODO: https://reuse.software/faq/#custom-license
@@ -357,48 +342,7 @@ end
 ---@return ({ other: CpyInfo[], spdx: CpyInfo[] } | nil)
 ---@see M.CpyInfo for the copyright's structure
 M.get_copyright_info = function(bufnr, l_start, l_end)
-    vim.validate({
-        bufnr = { bufnr, 'number' },
-        l_start = { l_start, 'number', true },
-        l_end = { l_end, 'number', true },
-    })
-
-    l_start = l_start or 0
-    l_end = l_end or l_start + 100
-
-    local lines = api.nvim_buf_get_lines(bufnr, l_start, l_end, false)
-    local cs_pat = '^%s*' .. vim.pesc(
-        util.get_commentstring(bufnr):match('^(.*)%%s') or ''
-    ):gsub('%s+$', '%%s*')
-    local spdx, other = {}, {}
-    for i, line in ipairs(lines)
-    do
-        -- stop checking if line not commented or not empty
-        if not line:match('^%s*$') and not line:match(cs_pat) then break end
-
-        local copyright = line:match(cs_pat .. 'SPDX%-FileCopyrightText:%s*(.+)')
-        if copyright
-        then
-            local info = parse_copyright_text(
-                copyright:gsub('^%s*[Cc]opyright%s+', '')
-            )
-            info.lnum = l_start + i - 1
-            table.insert(spdx, info)
-        else
-            local n
-            line, n = line:gsub(cs_pat .. '[Cc]opyright%s+', '')
-            if n == 1
-            then
-                line = line:gsub('^%(?[Cc©]%)?%s+', '')
-                local info = parse_copyright_text(line)
-                info.lnum = l_start + i - 1
-                table.insert(other, info)
-            end
-        end
-    end
-
-    if #spdx == 0 and #other == 0 then return nil end
-    return { spdx = spdx, other = other }
+    require('licenses/copyright').get(bufnr, l_start, l_end)
 end
 
 --- Get text from license file at {path} and replace variables with {vars}.
@@ -472,6 +416,23 @@ M.get_text = function(path, cs, vars, wrap_width)
     return lines
 end
 
+-- XXX: more complex licenses, see: https://reuse.software/faq/#multi-licensing
+
+--- Insert a license header on {lnum} of {bufnr}.
+---
+--- Example:
+--- ```lua
+---     local bufnr = vim.api.nvim_get_current_buf()
+---     licenses.insert(bufnr, 0, licenses.get_config(bufnr))
+--- ```
+---@param bufnr integer Buffer handle
+---@param lnum integer Line number, zero-indexed
+---@param config Config Configuration, NOTE: license key is required
+---@see M.get_config
+M.insert = function(bufnr, lnum, config)
+    require('licenses/insert')(bufnr, lnum, config)
+end
+
 -- XXX: wget support
 -- TODO: update index.txt for completion
 --- Fetch license text and header from https://spdx.org/licenses/{id}.json and save
@@ -479,67 +440,28 @@ end
 ---
 --- NOTE: Depends on the `curl` command.
 ---@param id string SPDX License Identifier
-M.fetch_license = function(id)
-    vim.validate({ id = { id, 'string' } })
-    if fn.executable('curl') == 0
-    then
-        util.err(
-            'could not find `curl`, please make sure it is installed and in path'
-        )
-        return
-    end
+M.fetch = function(id) require('licenses/fetch')(id) end
 
-    local url = 'https://spdx.org/licenses/' .. id .. '.json'
-    require('licenses/job').run({
-        cmd = { 'curl', '-isS', url },
-        on_stdout = true,
-        on_stderr = true,
-        on_failure = vim.schedule_wrap(
-            function(_, job) util.err(vim.trim(job:stderr())) end
-        ),
-        on_success = vim.schedule_wrap(
-            function(job)
-                local lines = vim.split(job:stdout(), '\n')
-                local status = tonumber(util.split_words(lines[1])[2])
-
-                if status ~= 200
-                then
-                    util.err(string.format('curl: %s returned %s', url, status))
-                    return
-                end
-
-                local i = 1
-                while lines[i] and lines[i] ~= '' do i = i + 1 end
-
-                local ok, json = pcall(
-                    vim.fn.json_decode, vim.list_slice(lines, i + 1)
-                )
-                if not ok
-                then
-                    util.err(json)
-                    return
-                end
-                ---@cast json table
-
-                local cache = util.get_cache()
-                fn.mkdir(cache .. 'text', 'p')
-                local f, msg = io.open(cache .. 'text/' .. id .. '.txt', 'w')
-                assert(f, msg)
-                f:write(json.standardLicenseTemplate)
-
-                local header = json.standardLicenseHeaderTemplate
-                if header
-                then
-                    fn.mkdir(cache .. 'header', 'p')
-                    f, msg = io.open(cache .. 'header/' .. id .. '.txt', 'w')
-                    assert(f, msg)
-                    f:write(header)
-                end
-
-                vim.notify('licenses.nvim: Succsesfully downloaded ' .. id)
-            end
-        ),
-    })
+--- Use |licenses-nvim.get_copyright_info| to check for copyrights and update them
+---
+--- If a copyright notice with the same name and email as specified in config is
+--- found then add current year if it isn't already the case, for example if 2020
+--- would become 2020-{current_year}, 2020-2022 would also change the same way.
+---
+--- If the copyright notice is using SPDX tags, but it has different name a new
+--- one is added above, e.g.:
+---
+---     `SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>`
+---
+--- would update to:
+--- ```
+---     SPDX-FileCopyrightText: 2023 reggie <contact<at>reggie<dot>re>
+---     SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>
+--- ```
+---@param bufnr integer Buffer handle
+---@param config Config Configuration, NOTE: copyright_holder key is required
+M.update_copyright = function(bufnr, config)
+    require('licenses/copyright').update(bufnr, config)
 end
 
 --- Write text of license with {id} to a file at {path}. If the file already exists
@@ -557,185 +479,7 @@ end
 ---@param config Config Configuration, NOTE: license key is required
 ---@see M.get_config
 M.write_license = function(path, config)
-    vim.validate({
-        path = { path, 'string' },
-        config = { config, 'table' },
-        license = { config.license, { 'function', 'string' } },
-    })
-
-    local id = util.get_val(config.license)
-    local license = util.get_file('text/' .. id .. '.txt')
-    if not license
-    then
-        util.err('License id `' .. id .. '` not found')
-        return
-    end
-
-    local ok, res = pcall(
-        fn.writefile,
-        M.get_text(
-            license,
-            nil,
-            config.vars,
-            ---@diagnostic disable-next-line: param-type-mismatch
-            util.get_val(config.wrap_width) or 0
-        ),
-        path
-    )
-    if not ok then util.err(res) end
-end
-
---- TODO: desc
----@param bufnr integer Buffer handle
----@param config Config Configuration, NOTE: copyright_holder key is required
-M.update_copyright = function(bufnr, config)
-    vim.validate({
-        bufnr = { bufnr, 'number' },
-        config = { config, 'table' },
-        copyright_holder = { config.copyright_holder, 'string' },
-    })
-
-
-    local copyrights = M.get_copyright_info(bufnr)
-    if not copyrights then return end
-
-    local cs = util.get_commentstring(bufnr)
-    local year = os.date('%Y')
-    local matched_spdx = false
-    for _, cpy in ipairs(copyrights.spdx)
-    do
-        if cpy.name == config.copyright_holder
-            and (not cpy.email or cpy.email == config.email)
-        then
-            matched_spdx = true
-            if year ~= cpy.years[#cpy.years]
-            then
-                api.nvim_buf_set_lines(
-                    bufnr, cpy.lnum, cpy.lnum + 1, false,
-                    {
-                        cs:format(
-                            util.format_spdx_copyright(
-                                cpy.years[1] .. '-' .. year,
-                                cpy.name,
-                                cpy.email
-                            )
-                        ),
-                    }
-                )
-            end
-        end
-    end
-
-    if not matched_spdx and #copyrights.spdx ~= 0
-    then
-        fn.appendbufline(
-            bufnr,
-            copyrights.spdx[1].lnum,
-            cs:format(
-                util.format_spdx_copyright(
-                ---@diagnostic disable-next-line: param-type-mismatch
-                    os.date('%Y'), config.copyright_holder, config.email
-                )
-            )
-        )
-    end
-
-    for _, cpy in ipairs(copyrights.other)
-    do
-        if cpy.name == config.copyright_holder
-            and (not cpy.email or cpy.email == config.email)
-            and year ~= cpy.years[#cpy.years]
-        then
-            local line = api.nvim_buf_get_lines(
-                bufnr, cpy.lnum, cpy.lnum + 1, false
-            )[1]
-            if #cpy.years == 1
-            then
-                line = line:gsub(cpy.years[1], cpy.years[1] .. '-' .. year, 1)
-            else
-                line = line:gsub('%-' .. cpy.years[2], '-' .. year, 1)
-            end
-            api.nvim_buf_set_lines(
-                bufnr, cpy.lnum, cpy.lnum + 1, false, { line }
-            )
-        end
-    end
-end
-
--- XXX: more complex licenses, see: https://reuse.software/faq/#multi-licensing
-
---- Insert a license header on {lnum} of {bufnr}.
----
---- Example:
---- ```lua
----     local bufnr = vim.api.nvim_get_current_buf()
----     licenses.insert_header(bufnr, 0, licenses.get_config(bufnr))
---- ```
----@param bufnr integer Buffer handle
----@param lnum integer Line number, zero-indexed
----@param config Config Configuration, NOTE: license key is required
----@see M.get_config
-M.insert_header = function(bufnr, lnum, config)
-    vim.validate({
-        bufnr = { bufnr, 'number' },
-        lnum = { lnum, 'number' },
-        config = { config, 'table' },
-        license = { config.license, { 'function', 'string' } },
-    })
-
-    local id = util.get_val(config.license)
-    config = vim.tbl_map(function(v) return util.get_val(v, id) end, config)
-
-    local cs = util.get_commentstring(bufnr)
-    local lines = {}
-
-    local header = util.get_file('header/' .. id .. '.txt')
-    local full_text = util.get_file('text/' .. id .. '.txt')
-
-    if not (header or full_text)
-    then
-        util.err('License id `' .. id .. '` not found')
-        return
-    end
-
-    local email = config.email
-    local holder = config.copyright_holder
-    if id ~= 'Unlicense' and holder
-    then
-        lines = {
-            cs:format(
-            ---@diagnostic disable-next-line: param-type-mismatch
-                util.format_spdx_copyright(os.date('%Y'), holder, email)
-            ),
-        }
-    end
-
-    vim.list_extend(
-        lines, { cs:format('SPDX-License-Identifier: ' .. id), '' }
-    )
-
-    local path = header or config.fallback_to_full_text and full_text
-    if config.use_license_header and path
-    then
-        vim.list_extend(
-            lines, M.get_text(path, cs, config.vars, config.wrap_width)
-        )
-
-        if not fn.getbufoneline(bufnr, lnum + 1):match('^%s*$')
-        then
-            table.insert(lines, '')
-        end
-    end
-
-    ---@diagnostic disable-next-line: param-type-mismatch
-    fn.appendbufline(bufnr, lnum, lines)
-
-    if config.write_license_to_file
-    then
-        fn.mkdir('LICENSES', 'p')
-        -- don't use the config, files in LICENSES should be unmodified
-        M.write_license('LICENSES/' .. id .. '.txt', { license = id })
-    end
+    require('licenses/write')(path, config)
 end
 
 ---@param list string[]
@@ -748,6 +492,15 @@ local filter_license_files = function(list)
     )
     table.sort(list)
     return fn.uniq(list)
+end
+
+-- TODO: use cursor to check if it was moved to a previous argument
+---@param cmdline string
+---@return integer
+local count_args = function(cmdline)
+    local nargs = #util.split_words(cmdline)
+    if cmdline:match('%s+$') then nargs = nargs + 1 end
+    return nargs
 end
 
 --- Setup user commands and apply {overrides} to the configuration.
@@ -788,19 +541,19 @@ M.setup = function(overrides)
                 )
             end
 
-            -- FIX: inserts line even if insert_header fails
+            -- FIX: inserts line even if insert fails
             if lnum ~= 0
             then
                 fn.appendbufline(api.nvim_get_current_buf(), lnum, '')
                 lnum = lnum + 1
             end
-            M.insert_header(bufnr, lnum, config)
+            M.insert(bufnr, lnum, config)
         end,
         {
             bang = true,
             bar = true,
             complete = function(_, cmdline)
-                if util.nargs(cmdline) ~= 2 then return end
+                if count_args(cmdline) ~= 2 then return end
 
                 local cache = util.get_cache()
                 return filter_license_files(
@@ -824,11 +577,11 @@ M.setup = function(overrides)
 
     api.nvim_create_user_command(
         'LicenseFetch',
-        function(opts) M.fetch_license(opts.fargs[1]) end,
+        function(opts) M.fetch(opts.fargs[1]) end,
         {
             bar = true,
             complete = function(_, cmdline)
-                if util.nargs(cmdline) ~= 2 then return end
+                if count_args(cmdline) ~= 2 then return end
                 return fn.readfile(util.get_file('index.txt'))
             end,
             desc = 'Fetch license from https://spdx.org/licenses.',
@@ -866,7 +619,7 @@ M.setup = function(overrides)
             bang = true,
             bar = true,
             complete = function(arglead, cmdline)
-                local nargs = util.nargs(cmdline)
+                local nargs = count_args(cmdline)
                 if nargs == 2
                 then
                     ---@diagnostic disable-next-line: param-type-mismatch
