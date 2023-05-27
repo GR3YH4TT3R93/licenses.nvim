@@ -12,8 +12,7 @@ return function(path, config)
     local license = util.get_file('text/' .. id .. '.txt')
     if not license
     then
-        util.err('License id `' .. id .. '` not found')
-        return
+        return 'License id `' .. id .. '` not found'
     end
 
     local ok, res = pcall(
@@ -27,5 +26,6 @@ return function(path, config)
         ),
         path
     )
-    if not ok then util.err(res) end
+
+    if not ok then return res --[[@as string]] end
 end

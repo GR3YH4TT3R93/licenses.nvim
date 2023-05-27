@@ -22,8 +22,7 @@ return function(bufnr, lnum, config)
 
     if not (header or full_text)
     then
-        util.err('License id `' .. id .. '` not found')
-        return
+        return 'License id `' .. id .. '` not found'
     end
 
     local email = config.email
@@ -39,20 +38,21 @@ return function(bufnr, lnum, config)
     end
 
     vim.list_extend(
-        lines, { cs:format('SPDX-License-Identifier: ' .. id), '' }
+        lines, { cs:format('SPDX-License-Identifier: ' .. id) }
     )
 
     local path = header or config.fallback_to_full_text and full_text
     if config.use_license_header and path
     then
+        table.insert(lines, '')
         vim.list_extend(
             lines, core.get_text(path, cs, config.vars, config.wrap_width)
         )
+    end
 
-        if not fn.getbufoneline(bufnr, lnum + 1):match('^%s*$')
-        then
-            table.insert(lines, '')
-        end
+    if not fn.getbufoneline(bufnr, lnum + 1):match('^%s*$')
+    then
+        table.insert(lines, '')
     end
 
     ---@diagnostic disable-next-line: param-type-mismatch

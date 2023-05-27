@@ -342,7 +342,7 @@ end
 ---@return ({ other: CpyInfo[], spdx: CpyInfo[] } | nil)
 ---@see M.CpyInfo for the copyright's structure
 M.get_copyright_info = function(bufnr, l_start, l_end)
-    require('licenses/copyright').get(bufnr, l_start, l_end)
+    return require('licenses/copyright').get(bufnr, l_start, l_end)
 end
 
 --- Get text from license file at {path} and replace variables with {vars}.
@@ -428,9 +428,10 @@ end
 ---@param bufnr integer Buffer handle
 ---@param lnum integer Line number, zero-indexed
 ---@param config Config Configuration, NOTE: license key is required
+---@return (nil | string) returns nil on success or string with error
 ---@see M.get_config
 M.insert = function(bufnr, lnum, config)
-    require('licenses/insert')(bufnr, lnum, config)
+    return require('licenses/insert')(bufnr, lnum, config)
 end
 
 -- XXX: wget support
@@ -477,9 +478,10 @@ end
 --- ```
 ---@param path string Relative path to output file
 ---@param config Config Configuration, NOTE: license key is required
+---@return (nil | string) returns nil on success or string with error
 ---@see M.get_config
 M.write_license = function(path, config)
-    require('licenses/write')(path, config)
+    return require('licenses/write')(path, config)
 end
 
 ---@param list string[]
@@ -541,13 +543,14 @@ M.setup = function(overrides)
                 )
             end
 
-            -- FIX: inserts line even if insert fails
-            if lnum ~= 0
+            local err = M.insert(bufnr, lnum, config)
+            if err
             then
-                fn.appendbufline(api.nvim_get_current_buf(), lnum, '')
-                lnum = lnum + 1
+                util.err(err)
+            elseif lnum ~= 0
+            then
+                fn.appendbufline(bufnr, lnum, '')
             end
-            M.insert(bufnr, lnum, config)
         end,
         {
             bang = true,
@@ -613,7 +616,8 @@ M.setup = function(overrides)
             local bufnr = api.nvim_get_current_buf()
             local config = M.get_config(bufnr, { license = opts.fargs[2] })
 
-            M.write_license(path, config)
+            local err = M.write_license(path, config)
+            if err then util.err(err) end
         end,
         {
             bang = true,

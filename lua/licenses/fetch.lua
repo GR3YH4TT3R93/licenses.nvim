@@ -2,6 +2,7 @@ local fn = vim.fn
 
 local util = require('licenses/util')
 
+-- XXX: consider adding callback param
 return function(id)
     vim.validate({ id = { id, 'string' } })
     if fn.executable('curl') == 0

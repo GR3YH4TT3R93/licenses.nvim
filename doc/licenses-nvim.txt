@@ -335,6 +335,9 @@ Parameters: ~
     • {lnum} `(integer)` Line number, zero-indexed
     • {config} `(Config)` Configuration, NOTE: license key is required
 
+Return: ~
+    `(nil | string)` returns nil on success or string with error
+
 See: ~
     • |licenses-nvim.get_config|
 
@@ -389,6 +392,9 @@ Example:
 Parameters: ~
     • {path} `(string)` Relative path to output file
     • {config} `(Config)` Configuration, NOTE: license key is required
+
+Return: ~
+    `(nil | string)` returns nil on success or string with error
 
 See: ~
     • |licenses-nvim.get_config|
