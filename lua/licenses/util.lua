@@ -68,6 +68,42 @@ M.get_file = function(path)
         or fn.filereadable(cache .. path) == 1 and cache .. path
 end
 
+---@param header boolean?
+---@param text boolean?
+M.get_available_licenses = function(header, text)
+    header = header == nil and true
+    text = text == nil and true
+
+    local cache = M.get_cache()
+    local results = {}
+    if header
+    then
+        results = vim.list_extend(
+            api.nvim_get_runtime_file('*licenses/header/*', true),
+            ---@diagnostic disable-next-line: param-type-mismatch
+            fn.globpath(cache .. 'header', '*', 0, 1)
+        )
+    end
+
+    if text
+    then
+        vim.list_extend(
+            results, api.nvim_get_runtime_file('*licenses/text/*', true)
+        )
+        vim.list_extend(
+        ---@diagnostic disable-next-line: param-type-mismatch
+            results, fn.globpath(cache .. 'text', '*', 0, 1)
+        )
+    end
+
+    results = fn.map(
+        results,
+        function(_, v) return fn.fnamemodify(v, ':t:r') end
+    )
+    table.sort(results)
+    return fn.uniq(results)
+end
+
 ---@generic T,U
 ---@param v T | fun(...: U): T
 ---@param ... U

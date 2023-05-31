@@ -24,7 +24,7 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- TODO: telescope
+-- TODO: telescope extension docs
 -- TODO: snippets
 
 --- Insert and write license headers and/or files.
@@ -484,18 +484,6 @@ M.write_license = function(path, config)
     return require('licenses/write')(path, config)
 end
 
----@param list string[]
----@return string[]
----@private
-local filter_license_files = function(list)
-    list = fn.map(
-        list,
-        function(_, v) return fn.fnamemodify(v, ':t:r') end
-    )
-    table.sort(list)
-    return fn.uniq(list)
-end
-
 -- TODO: use cursor to check if it was moved to a previous argument
 ---@param cmdline string
 ---@return integer
@@ -557,21 +545,7 @@ M.setup = function(overrides)
             bar = true,
             complete = function(_, cmdline)
                 if count_args(cmdline) ~= 2 then return end
-
-                local cache = util.get_cache()
-                return filter_license_files(
-                    vim.list_extend(
-                        vim.list_extend(
-                            api.nvim_get_runtime_file('*licenses/header/*', true),
-                            api.nvim_get_runtime_file('*licenses/text/*', true)
-                        ),
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        fn.globpath(
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                            cache .. 'header,' .. cache .. 'text', '*', 0, 1
-                        )
-                    )
-                )
+                return util.get_available_licenses()
             end,
             desc = 'Insert license header on top of current buffer.',
             nargs = '?',
@@ -630,11 +604,7 @@ M.setup = function(overrides)
                     return fn.glob(fn.fnameescape(arglead) .. '*', 0, 1) --[=[@as string[]]=]
                 elseif nargs == 3
                 then
-                    return filter_license_files(vim.list_extend(
-                        api.nvim_get_runtime_file('*licenses/text/*', true),
-                        ---@diagnostic disable-next-line: param-type-mismatch
-                        fn.globpath(util.get_cache() .. 'text', '*', 0, 1)
-                    ))
+                    return util.get_available_licenses(false, true)
                 end
             end
             ,
