@@ -441,7 +441,9 @@ end
 ---
 --- NOTE: Depends on the `curl` command.
 ---@param id string SPDX License Identifier
-M.fetch = function(id) require('licenses/fetch')(id) end
+---@param callback? (fun(err: string?))
+--- Callback that takes err message on failure or nil on success
+M.fetch = function(id, callback) require('licenses/fetch')(id, callback) end
 
 --- Use |licenses-nvim.get_copyright_info| to check for copyrights and update them
 ---
@@ -554,7 +556,12 @@ M.setup = function(overrides)
 
     api.nvim_create_user_command(
         'LicenseFetch',
-        function(opts) M.fetch(opts.fargs[1]) end,
+        function(opts)
+            M.fetch(
+                opts.fargs[1],
+                function(err) if err then util.err(err) end end
+            )
+        end,
         {
             bar = true,
             complete = function(_, cmdline)

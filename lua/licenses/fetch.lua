@@ -2,12 +2,17 @@ local fn = vim.fn
 
 local util = require('licenses/util')
 
--- XXX: consider adding callback param
-return function(id)
-    vim.validate({ id = { id, 'string' } })
+return function(id, callback)
+    vim.validate({
+        id = { id, 'string' },
+        callback = { callback, 'function', true },
+    })
+
+    callback = callback or function() end
+
     if fn.executable('curl') == 0
     then
-        util.err(
+        callback(
             'could not find `curl`, please make sure it is installed and in path'
         )
         return
@@ -19,7 +24,7 @@ return function(id)
         on_stdout = true,
         on_stderr = true,
         on_failure = vim.schedule_wrap(
-            function(_, job) util.err(vim.trim(job:stderr())) end
+            function(_, job) callback(vim.trim(job:stderr())) end
         ),
         on_success = vim.schedule_wrap(
             function(job)
@@ -28,7 +33,7 @@ return function(id)
 
                 if status ~= 200
                 then
-                    util.err(string.format('curl: %s returned %s', url, status))
+                    callback(string.format('curl: %s returned %s', url, status))
                     return
                 end
 
@@ -40,7 +45,7 @@ return function(id)
                 )
                 if not ok
                 then
-                    util.err(json)
+                    callback(json)
                     return
                 end
                 ---@cast json table

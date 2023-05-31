@@ -342,7 +342,7 @@ See: ~
     • |licenses-nvim.get_config|
 
 ------------------------------------------------------------------------------
-fetch({id})                                                *licenses-nvim.fetch*
+fetch({id}, {callback})                                    *licenses-nvim.fetch*
 
 Fetch license text and header from https://spdx.org/licenses/{id}.json and save
 them to `stdpath("cache")`.
@@ -351,6 +351,8 @@ NOTE: Depends on the `curl` command.
 
 Parameters: ~
     • {id} `(string)` SPDX License Identifier
+    • {callback} `(optional)` `(fun(err: string?))`
+        Callback that takes err message on failure or nil on success
 
 ------------------------------------------------------------------------------
 update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
