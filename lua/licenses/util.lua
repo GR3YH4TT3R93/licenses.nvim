@@ -61,11 +61,12 @@ M.get_commentstring = function(bufnr)
 end
 
 ---@param path string
----@return string
+---@return string?
 M.get_file = function(path)
     local cache = M.get_cache()
     return api.nvim_get_runtime_file('*licenses/' .. path, false)[1]
         or fn.filereadable(cache .. path) == 1 and cache .. path
+        or nil
 end
 
 ---@param header boolean?
