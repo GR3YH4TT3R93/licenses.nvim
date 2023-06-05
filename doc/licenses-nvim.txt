@@ -21,8 +21,8 @@ Insert and write license headers and/or files.
   fetch..................................................|licenses-nvim.fetch|
   update_copyright............................|licenses-nvim.update_copyright|
   write_license..................................|licenses-nvim.write_license|
-  count_args........................................|licenses-nvim.count_args|
   setup..................................................|licenses-nvim.setup|
+  TELESCOPE EXTENSION................................|licenses-nvim-telescope|
 
 ==============================================================================
 GETTING STARTED                                            *licenses-nvim-intro*
@@ -402,15 +402,6 @@ See: ~
     • |licenses-nvim.get_config|
 
 ------------------------------------------------------------------------------
-count_args({cmdline})                                 *licenses-nvim.count_args*
-
-Parameters: ~
-    • {cmdline} `(string)`
-
-Return: ~
-    `(integer)`
-
-------------------------------------------------------------------------------
 setup({overrides})                                         *licenses-nvim.setup*
 
 Setup user commands and apply {overrides} to the configuration.
@@ -422,5 +413,27 @@ See: ~
     • |licenses-nvim-user-commands| for commands that get created
     • |licenses-nvim.Config| for {overrides} syntax
     • |licenses-nvim-intro| for example usage and how to get started
+
+==============================================================================
+TELESCOPE EXTENSION                                    *licenses-nvim-telescope*
+
+licenses.nvim provides a telescope extension, if you have telescope you can load
+the extension using the following snippet:
+>lua
+    require('telescope').load_extension('licenses-nvim')
+<
+The extension provides these actions:
+    • {insert} Use telescope to pick license and then insert it
+    • {pick} Pick license and set it as default for current buffer
+
+You can then use `:Telescope licenses-nvim [ACTION]`, if ACTION is omitted then 
+insert is used. The default action can be changed in |telescope.setup()|.
+>lua
+    -- rest of the configuration...
+    extensions = {
+        -- other extensions...
+        ['licenses-nvim'] = { default_action = 'pick' } 
+    }
+<
 
  vim:tw=78:ts=8:noet:ft=help:norl:

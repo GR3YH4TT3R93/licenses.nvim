@@ -90,12 +90,31 @@ m.pick = function(opts)
     ):find()
 end
 
+---@mod telescope telescope extension
+---@text licenses.nvim provides a telescope extension, if you have telescope you can load
+--- the extension using the following snippet:
+--- ```lua
+---     require('telescope').load_extension('licenses-nvim')
+--- ```
+--- The extension provides these actions:
+---     • {insert} Use telescope to pick license and then insert it
+---     • {pick} Pick license and set it as default for current buffer
+---
+--- You can then use `:Telescope licenses-nvim [ACTION]`, if ACTION is omitted then 
+--- insert is used. The default action can be changed in |telescope.setup()|.
+--- ```lua
+---     -- rest of the configuration...
+---     extensions = {
+---         -- other extensions...
+---         ['licenses-nvim'] = { default_action = 'pick' } 
+---     }
+--- ```
+
 return require('telescope').register_extension({
     setup = function(config)
-        print(vim.inspect(config))
         config = config or {}
         vim.validate({
-            ext_config = { config, 'table' },
+            config = { config, 'table' },
             default_action = { config.default_action, 'string', true },
         })
         m.default = m[config.default_action] or m.insert

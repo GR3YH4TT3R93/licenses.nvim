@@ -71,8 +71,8 @@ end
 ---@param header boolean?
 ---@param text boolean?
 M.get_available_licenses = function(header, text)
-    header = header == nil and true
-    text = text == nil and true
+    if header == nil then header = true end
+    if text == nil then text = true end
 
     local cache = M.get_cache()
     local results = {}

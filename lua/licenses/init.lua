@@ -24,7 +24,6 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- TODO: telescope extension docs
 -- TODO: snippets
 
 --- Insert and write license headers and/or files.
@@ -489,6 +488,7 @@ end
 -- TODO: use cursor to check if it was moved to a previous argument
 ---@param cmdline string
 ---@return integer
+---@private
 local count_args = function(cmdline)
     local nargs = #util.split_words(cmdline)
     if cmdline:match('%s+$') then nargs = nargs + 1 end
