@@ -6,6 +6,7 @@ LicensesNvim	licenses-nvim.txt	/*LicensesNvim*
 licenses-nvim-intro	licenses-nvim.txt	/*licenses-nvim-intro*
 licenses-nvim-license-files	licenses-nvim.txt	/*licenses-nvim-license-files*
 licenses-nvim-lua	licenses-nvim.txt	/*licenses-nvim-lua*
+licenses-nvim-luasnip	licenses-nvim.txt	/*licenses-nvim-luasnip*
 licenses-nvim-telescope	licenses-nvim.txt	/*licenses-nvim-telescope*
 licenses-nvim-user-commands	licenses-nvim.txt	/*licenses-nvim-user-commands*
 licenses-nvim.Config	licenses-nvim.txt	/*licenses-nvim.Config*

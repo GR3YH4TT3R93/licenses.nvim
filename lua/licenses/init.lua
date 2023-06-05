@@ -24,8 +24,6 @@
 -- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 -- IN THE SOFTWARE.
 
--- TODO: snippets
-
 --- Insert and write license headers and/or files.
 ---
 ---@tag licenses.nvim LicensesNvim

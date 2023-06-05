@@ -111,6 +111,8 @@ end
 ---         ['licenses-nvim'] = { default_action = 'pick' }
 ---     }
 --- ```
+---@see telescope.load_extension()
+--- telescope.setup()
 
 return require('telescope').register_extension({
     setup = function(config)

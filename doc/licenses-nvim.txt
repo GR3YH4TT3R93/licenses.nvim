@@ -23,6 +23,7 @@ Insert and write license headers and/or files.
   write_license..................................|licenses-nvim.write_license|
   setup..................................................|licenses-nvim.setup|
   TELESCOPE EXTENSION................................|licenses-nvim-telescope|
+  LUASNIP SNIPPETS.....................................|licenses-nvim-luasnip|
 
 ==============================================================================
 GETTING STARTED                                            *licenses-nvim-intro*
@@ -436,5 +437,25 @@ insert is used. The default action can be changed in |telescope.setup()|.
         ['licenses-nvim'] = { default_action = 'pick' }
     }
 <
+See: ~
+    • |telescope.load_extension()|
+    • |telescope.setup()|
+
+==============================================================================
+LUASNIP SNIPPETS                                         *licenses-nvim-luasnip*
+
+licenses.nvim provides a couple of snippets for
+https://github.com/L3MON4D3/LuaSnip.
+
+These snippets are triggered with:
+    • {license} Inserts license header on current line
+    • {SPDX} inserts SPDX copyright and license tags
+
+If you have LuaSnip installed you can enable them with:
+>lua
+    luasnip.loaders.from_lua').load()
+<
+See: ~
+    • |luasnip-loaders-lua| for more options
 
  vim:tw=78:ts=8:noet:ft=help:norl:
