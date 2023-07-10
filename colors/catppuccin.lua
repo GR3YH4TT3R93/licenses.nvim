@@ -250,25 +250,3 @@ for name in pairs(highlights)
 do
     vim.api.nvim_set_hl(0, name, highlights[name])
 end
-
-for i, color in ipairs({
-    c.overlay0,
-    c.red,
-    c.green,
-    c.yellow,
-    c.blue,
-    c.pink,
-    c.sky,
-    c.text,
-    c.overlay1,
-    c.red,
-    c.green,
-    c.yellow,
-    c.blue,
-    c.pink,
-    c.sky,
-    c.text,
-})
-do
-    vim.g['terminal_color_' .. tostring(i - 1)] = color
-end

@@ -68,11 +68,12 @@ function! s:hi(group, ...)
     "     \ 'gui=' . emstr[:-2], 'cterm=' . emstr[:-2]
     "     \ ]
 
-    let histring = [ 'hi', a:group,
-        \ 'guifg=' . fg,
-        \ 'guibg=' . bg, 
-        \ 'gui=' . emstr[:-2], 'cterm=' . emstr[:-2]
-        \ ]
+    let histring = [
+        \'hi', a:group,
+        \'guifg=' . fg,
+        \'guibg=' . bg, 
+        \'gui=' . emstr[:-2], 'cterm=' . emstr[:-2]
+    \]
 
     " special
     if a:0 >= 4
@@ -210,3 +211,13 @@ hi link mkCodeStart mkCodeEnd
 call s:hi('qfFileName', s:blue)
 call s:hi('qfLineNr', s:yellow)
 
+" vim terminal
+let terminal_ansi_colors = [ 
+    \s:overlay0, s:red, s:green, s:yellow, s:blue, s:pink, s:sky, s:text,
+    \s:overlay1, s:red, s:green, s:yellow, s:blue, s:pink, s:sky, s:text
+\]
+
+" nvim terminal
+for i in range(0, len(g:terminal_ansi_colors) - 1)
+    execute printf("let g:terminal_color_%d='%s'", i, terminal_ansi_colors[i])
+endfor

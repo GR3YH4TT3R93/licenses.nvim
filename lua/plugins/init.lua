@@ -10,7 +10,7 @@ require('autosession').setup()
 require('plugins/feline')
 
 -- gitsigns.nvim
-require('gitsigns').setup()
+if fn.executable('git') == 1 then require('gitsigns').setup() end
 
 -- nvim-dap
 l.register(
