@@ -7,9 +7,15 @@ augroup vimrc
         \| call matchadd('Todo', '\c\<todo\>')
 
     " terminal
-    au BufWinEnter,TermOpen,WinEnter term://* startinsert
-    au BufWinEnter,TermOpen,WinEnter term://* 
-        \setlocal nonumber norelativenumber
+    if has('nvim')
+        au BufWinEnter,TermOpen,WinEnter term://* startinsert
+        au BufWinEnter,TermOpen,WinEnter term://* 
+            \setlocal nonumber norelativenumber
+    else
+        au BufWinEnter,TerminalOpen,WinEnter term://* startinsert
+        au BufWinEnter,TerminalOpen,WinEnter term://* 
+            \setlocal nonumber norelativenumber
+    endif
     au BufLeave term:://* stopinsert
 
     " number column

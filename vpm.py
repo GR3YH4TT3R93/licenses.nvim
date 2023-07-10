@@ -19,7 +19,9 @@ def git(args: list[str], **kwargs) -> subprocess.CompletedProcess:
     return subprocess.run(args, **kwargs)
 
 
-def get_plugins(plugins_path: list[str]) -> list[dict] | None:
+# def get_plugins(plugins_path: list[str]) -> list[dict] | None:
+# removed type annotation for compatiblity with <=3.9
+def get_plugins(plugins_path: list[str]) -> list[dict]:
     plugins = []
     for path in plugins_path:
         if not os.path.isfile(path):
@@ -121,6 +123,7 @@ def main(action: str, plugins_path: list[str], pack_path: str) -> int:
     if action != "clean":
         for plugin in plugins:
             first_install = False
+            # also check repo url, not only directory name
             if not os.path.isdir(plugin["name"]):
                 first_install = True
                 install(plugin)
