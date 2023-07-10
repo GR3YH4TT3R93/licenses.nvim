@@ -10,7 +10,9 @@ Rest of the config is pretty self-explanatory, just follow the `require` calls
 in `init.lua` to find out more.
 
 ## Minimal vim setup
-##### This is here for my convenience, do not blindly copy it
+
+_This is here for my convenience, do not blindly copy it_
+
 ```bash
 git clone https://git.sr.ht/~reggie/config.nvim \
     && cp -f config.nvim/minimal/init.vim ~/.vimrc \
