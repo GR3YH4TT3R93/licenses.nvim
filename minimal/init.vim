@@ -1,6 +1,10 @@
 set encoding=utf-8
 scriptencoding utf-8
 
+if !exists('g:colors_name')
+    colorscheme catppuccin_minimal
+endif
+
 set autoindent
 set autoread
 set backspace=indent,eol,start
