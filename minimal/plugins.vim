@@ -1,9 +1,6 @@
 " colemak_dh.nvim
 call colemak_dh#setup()
 
-" colorizer
-let colorizer_maxlines = 500
-
 " delimitMate
 let delimitMate_balance_matchpairs=1
 let delimitMate_nesting_quotes=['`']
