@@ -39,7 +39,7 @@ if exists('syntax_on')
     syntax reset
 endif
 
-let g:colors_name='catppuccin'
+let colors_name='catppuccin_minimal'
 
 function! s:hi(group, ...)
     " Arguments: group, guifg, guibg, gui, guisp
