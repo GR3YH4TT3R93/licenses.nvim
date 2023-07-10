@@ -14,7 +14,9 @@
     "lewis6991/gitsigns.nvim",
     "lukas-reineke/indent-blankline.nvim",
     "neovim/nvim-lspconfig",
+    "norcalli/nvim-colorizer.lua",
     "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
     "nvim-treesitter/nvim-treesitter-context",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
@@ -27,7 +29,6 @@
     { "repo": "luukvbaal/stabilize.nvim", "branch": "0.8" },
     { "repo": "mfussenegger/nvim-dap", "opt": true },
     { "repo": "nvim-telescope/telescope.nvim", "opt": true },
-    { "repo": "nvim-treesitter/nvim-treesitter" },
     { "repo": "rcarriga/nvim-dap-ui", "opt": true },
     { "repo": "weilbith/nvim-code-action-menu", "opt": true, "update": false }
 ]

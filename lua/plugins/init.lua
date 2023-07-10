@@ -25,6 +25,9 @@ l.register(
 -- nvim-code-action-menu
 l.register('nvim-code-action-menu', { commands = { 'CodeActionMenu' } })
 
+-- nvim-colorizer
+require('colorizer').setup()
+
 -- nvim-lightbulb
 require('nvim-lightbulb').setup({
     sign = { enabled = true, priority = 10, text = 'A' },

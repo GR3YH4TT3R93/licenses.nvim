@@ -2,7 +2,6 @@
     "Raimondi/delimitMate",
     "andymass/vim-matchup",
     "https://git.sr.ht/~reggie/colemak_dh.nvim",
-    "lilydjwg/colorizer",
     "tpope/vim-commentary",
     "tpope/vim-eunuch"
 ]
