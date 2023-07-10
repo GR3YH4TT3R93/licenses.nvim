@@ -13,13 +13,16 @@ else
 endif
 set colorcolumn=80
 set cursorline
+set display=lastline,truncate
 set expandtab
 if has('nvim-0.9')
     set exrc
 endif
 silent! set fillchars+=fold:-,foldopen:┬
 silent! set foldcolumn=auto:3
-set foldexpr=nvim_treesitter#foldexpr()
+if exists('*nvim_treesitter#foldexpr')
+    set foldexpr=nvim_treesitter#foldexpr()
+endif
 " set 'foldmethod=expr',
 set formatoptions+=1j
 set fsync
@@ -47,7 +50,9 @@ set splitbelow
 " 'splitkeep=screen', -- not yet better than stabilize.nvim
 set splitright
 set tabstop=4
-if &t_Co > 16
+if &t_Co == 8
+    set t_Co=16
+elseif &t_Co > 16
     set termguicolors
 endif
 set title

@@ -3,6 +3,8 @@ noremap <A-n> <Cmd>move .+1<CR>
 noremap <silent> <Leader>d :Commentary<CR>
 
 inoremap <CR> <Plug>delimitMateCR
+inoremap <C-l> <C-g>u<C-u>
+inoremap <C-w> <C-g>u<C-w>
 
 nnoremap <silent> <C-i> 
     \:nohlsearch<C-r>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-l>

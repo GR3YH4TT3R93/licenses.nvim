@@ -55,16 +55,30 @@ def clean(plugins: list[dict]):
 
 def install(plugin: dict):
     branch = plugin.get("branch")
+    # cannot do submodule add --depth=1 --branch <branch> so we clone first and
+    # then add as submodule
     git(
-        ["submodule", "add", "--force"]
+        [
+            "clone",
+            "--depth=1",
+        ]
         + (branch and ["--branch", branch] or [])
         + [plugin["repo"], plugin["name"]]
+    )
+    git(["submodule", "add", plugin["repo"], plugin["name"]])
+    git(
+        [
+            "config",
+            "-f",
+            ".gitmodules",
+            "submodule." + plugin["name"] + ".shallow",
+            "true",
+        ]
     )
 
 
 def update(plugin: dict):
     branch = plugin.get("branch")
-    git(["submodule", "update", "--init", "--remote", plugin["name"]])
     if branch:
         git(
             [
@@ -75,6 +89,16 @@ def update(plugin: dict):
                 plugin["name"],
             ]
         )
+    git(
+        [
+            "submodule",
+            "update",
+            "--init",
+            "--recursive",
+            "--remote",
+            plugin["name"],
+        ]
+    )
 
 
 def main(action: str, plugins_path: list[str], pack_path: str) -> int:
