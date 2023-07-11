@@ -123,7 +123,7 @@ def main(action: str, plugins_path: list[str], pack_path: str) -> int:
     if action != "clean":
         for plugin in plugins:
             first_install = False
-            # also check repo url, not only directory name
+            # TODO: also check repo url, not only directory name
             if not os.path.isdir(plugin["name"]):
                 first_install = True
                 install(plugin)

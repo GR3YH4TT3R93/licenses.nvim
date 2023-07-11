@@ -8,18 +8,24 @@ augroup vimrc
 
     " terminal
     if has('nvim')
-        au BufWinEnter,TermOpen,WinEnter term://* startinsert
-        au BufWinEnter,TermOpen,WinEnter term://* 
-            \setlocal nonumber norelativenumber
+        au BufEnter,TermOpen term://* startinsert
+        au TermOpen term://* setlocal nonumber norelativenumber
     else
-        au BufWinEnter,TerminalOpen,WinEnter term://* startinsert
-        au BufWinEnter,TerminalOpen,WinEnter term://* 
-            \setlocal nonumber norelativenumber
+        au BufEnter,TerminalOpen term://* startinsert
+        au TerminalOpen term://* setlocal nonumber norelativenumber
     endif
     au BufLeave term:://* stopinsert
 
+    " if a session file loads terminals we might end up in insert mode
+    au SessionLoadPost * stopinsert
+
     " number column
-    au BufEnter,FocusGained,InsertLeave,WinEnter * 
-        \if &nu && mode() != "i" | set rnu | endif
-    au BufLeave,FocusLost,InsertEnter,WinLeave * if &nu | set nornu | endif
+    au BufEnter,FocusGained,InsertLeave,WinEnter *
+        \ if &number && mode() != "i"
+        \| set relativenumber
+        \| endif
+    au BufLeave,FocusLost,InsertEnter,WinLeave *
+        \ if &number
+        \| set norelativenumber
+        \| endif
 augroup end
