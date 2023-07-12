@@ -1,6 +1,9 @@
 " colemak_dh.nvim
 call colemak_dh#setup()
 
+" cursorwod
+call cursorword#setup()
+
 " delimitMate
 let delimitMate_balance_matchpairs=1
 let delimitMate_nesting_quotes=['`']

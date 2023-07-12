@@ -286,18 +286,16 @@ local add_local = function(plugin)
     cmd.set(string.format('runtimepath+=%s/local/%s', config, plugin))
 end
 
-add_local('dot_repeat.nvim')
-add_local('vimdoc.nvim')
-
 for _, plugin in ipairs({
-    'cursorword',
+    'dot_repeat',
     'tasks',
+    'vimdoc'
 })
 do
     add_local(plugin .. '.nvim')
-    require(plugin).setup()
 end
 
+require('tasks').setup()
 require('tasks').register({
     name = 'build.sh',
     cmd = './build.sh',

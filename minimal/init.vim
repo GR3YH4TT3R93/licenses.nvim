@@ -61,7 +61,7 @@ elseif &t_Co > 16
 endif
 set title
 set undofile
-set updatetime=1000
+set updatetime=500
 set viewoptions=cursor,folds
 set wrapmargin=8
 set wildchar=<C-i>
