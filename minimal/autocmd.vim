@@ -1,10 +1,10 @@
 augroup vimrc
     au!
 
-    au BufEnter * call matchadd('XXX', '\<XXX\>') 
-        \| call matchadd('Fix', '\c\<fix\>\|\<fixme\>')
-        \| call matchadd('Note', '\c\<note\>')
-        \| call matchadd('Todo', '\c\<todo\>')
+    au BufEnter * call matchadd('XXX', '\m\C\<XXX\>') 
+        \| call matchadd('Fix', '\m\c\<fix\>\|\<fixme\>')
+        \| call matchadd('Note', '\m\c\<note\>\|\<info\>')
+        \| call matchadd('Todo', '\m\c\<todo\>')
 
     " terminal
     if has('nvim')
