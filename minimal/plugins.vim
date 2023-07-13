@@ -1,8 +1,8 @@
 " colemak_dh.nvim
-call colemak_dh#setup()
+let colemak_dh_autoload=1
 
 " cursorwod
-call cursorword#setup()
+let cursorword_autoload=1
 
 " delimitMate
 let delimitMate_balance_matchpairs=1
