@@ -68,6 +68,8 @@ local file_info = function(use_icon, max_width)
     return fname
 end
 
+local is_trouble = function() return vim.bo.filetype == 'Trouble' end
+
 local git_info_exists = require('feline.providers.git').git_info_exists
 
 local add_active = function(idx, component)
@@ -95,6 +97,7 @@ add_active(
             local result, _ = math.modf((current_line / total_line) * 100)
             return (result < 10 and ' 0' or ' ') .. result .. '%%'
         end,
+        enabled = function() return not is_trouble() end,
         hl = { fg = colors.mantle, bg = colors.lavender },
     }
 )
@@ -102,16 +105,13 @@ add_active(
 add_active(
     1, {
         provider = 'position',
+        enabled = function() return not is_trouble() end,
         hl = { fg = colors.mantle, bg = colors.lavender },
         left_sep = { str = ' ', hl = { bg = colors.lavender } },
         right_sep = {
             str = 'right_rounded',
             hl = function()
-                return {
-                    fg = colors.lavender,
-                    bg = mode_colors[fn.mode()]
-                        [2],
-                }
+                return { fg = colors.lavender, bg = mode_colors[fn.mode()][2] }
             end,
         },
     }
@@ -120,7 +120,10 @@ add_active(
 
 add_active(
     1, {
-        provider = function() return ' ' .. mode_colors[fn.mode()][1] end,
+        provider = function()
+            return ' '
+                .. (is_trouble() and 'Trouble' or mode_colors[fn.mode()][1])
+        end,
         hl = function()
             return { fg = colors.mantle, bg = mode_colors[fn.mode()][2] }
         end,
@@ -278,6 +281,7 @@ add_active(
         provider = function()
             return file_info(true, is_lsp_progress() and 30 or 40)
         end,
+        enabled = function() return not is_trouble() end,
         hl = { fg = colors.mantle, bg = colors.maroon },
         left_sep = {
             str = 'left_rounded',
@@ -296,7 +300,10 @@ add_active(
 
 add_inactive(
     1, {
-        provider = function() return file_info(false, 60) end,
+        provider = function()
+            return is_trouble() and 'Trouble' or file_info(false, 60)
+        end,
+        left_sep = { str = ' ', hl = { bg = colors.mantle } },
         hl = { fg = colors.text, bg = colors.mantle },
         icon = '',
     }
