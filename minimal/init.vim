@@ -68,6 +68,10 @@ set wildchar=<C-i>
 
 let no_man_maps=v:true
 
+if !has('nvim')
+    packloadall
+endif
+
 helptags ALL
 syntax on
 

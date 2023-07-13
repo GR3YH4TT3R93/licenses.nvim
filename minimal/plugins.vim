@@ -1,7 +1,7 @@
 " colemak_dh.nvim
-let colemak_dh_autoload=1
+call colemak_dh#setup()
 
-" cursorwod
+" cursorwod.vim
 let cursorword_autoload=1
 
 " delimitMate
