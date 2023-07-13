@@ -24,7 +24,7 @@ if has('nvim-0.9')
 endif
 silent! set fillchars+=fold:-,foldopen:┬
 silent! set foldcolumn=auto:3
-if exists('*nvim_treesitter#foldexpr')
+if has('nvim-0.8')
     set foldexpr=nvim_treesitter#foldexpr()
 endif
 " set 'foldmethod=expr',
