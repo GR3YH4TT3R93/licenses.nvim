@@ -2,10 +2,11 @@ local wo = vim.wo
 local lsp = vim.lsp.buf
 
 local dot_repeat = require('dot_repeat')
-local l = require('lazyload')
 
 local telescope = function(action, opts)
-    return function() l.require('telescope.builtin')[action](opts) end
+    return function()
+        require('lazyload').require('telescope.builtin')[action](opts)
+    end
 end
 
 for _, keymap in ipairs({

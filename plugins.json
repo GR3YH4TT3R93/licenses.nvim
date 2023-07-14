@@ -28,7 +28,11 @@
     { "repo": "kosayoda/nvim-lightbulb", "update": false },
     { "repo": "luukvbaal/stabilize.nvim", "branch": "0.8" },
     { "repo": "mfussenegger/nvim-dap", "opt": true },
-    { "repo": "nvim-telescope/telescope.nvim", "opt": true },
+    {
+        "repo": "nvim-telescope/telescope.nvim",
+        "branch": "0.1.x",
+        "opt": true
+    },
     { "repo": "rcarriga/nvim-dap-ui", "opt": true },
     { "repo": "weilbith/nvim-code-action-menu", "opt": true, "update": false }
 ]

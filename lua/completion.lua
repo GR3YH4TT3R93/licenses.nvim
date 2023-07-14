@@ -1,9 +1,9 @@
 local api = vim.api
 local cmd = vim.cmd
 local fn = vim.fn
+local lsp = vim.lsp
 
 local cmp = require('cmp')
-local lsp = vim.lsp
 local luasnip = require('luasnip')
 
 -- cmp fucks up mapping of i and u
@@ -39,17 +39,17 @@ end
 ---@return table
 local get_sources = function(...)
     return cmp.config.sources(
-        fn.map(
-            { ... },
-            function(_, val)
-                if type(val) == 'string'
+        vim.tbl_map(
+            function(v)
+                if type(v) == 'string'
                 then
-                    return { name = val, dup = 0 }
+                    return { name = v, dup = 0 }
                 else
-                    val.dup = 0
-                    return val
+                    v.dup = 0
+                    return v
                 end
-            end
+            end,
+            { ... }
         )
     )
 end
@@ -132,7 +132,7 @@ cmp.setup({
         'path',
         'buffer'
     ),
-    view = { entries = 'custom', },
+    view = { entries = 'custom' },
     window = {
         completion = { border = 'single' },
         documentation = { border = 'single' },
@@ -345,8 +345,7 @@ end
 
 local telescope = function(s)
     return function(...)
-        require('plugins/telescope')
-        require('telescope.builtin')['lsp_' .. s](...)
+        require('lazyload').require('telescope.builtin')['lsp_' .. s](...)
     end
 end
 

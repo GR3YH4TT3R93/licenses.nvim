@@ -189,7 +189,7 @@ l.register(
                         ' ┘',
                         '└',
                     },
-                    dynamic_preview_title = true,
+                    -- dynamic_preview_title = true,
                     results_title = false,
                     prompt_title = false,
                     layout_config = {
