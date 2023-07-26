@@ -225,7 +225,7 @@ add_active(
     }
 )
 
-local diagnostics_enabled = function(severity)
+local diagnostics_exist = function(severity)
     return not is_lsp_progress()
         and lsp.diagnostics_exist(vim.diagnostic.severity[severity])
 end
@@ -233,7 +233,7 @@ end
 add_active(
     2, {
         provider = 'diagnostic_errors',
-        enabled = function() return diagnostics_enabled('ERROR') end,
+        enabled = function() return diagnostics_exist('ERROR') end,
         hl = { fg = colors.red, bg = colors.surface0 },
     }
 )
@@ -241,7 +241,7 @@ add_active(
 add_active(
     2, {
         provider = 'diagnostic_warnings',
-        enabled = function() return diagnostics_enabled('WARN') end,
+        enabled = function() return diagnostics_exist('WARN') end,
         hl = { fg = colors.yellow, bg = colors.surface0 },
     }
 )
@@ -249,7 +249,7 @@ add_active(
 add_active(
     2, {
         provider = 'diagnostic_info',
-        enabled = function() return diagnostics_enabled('INFO') end,
+        enabled = function() return diagnostics_exist('INFO') end,
         hl = { fg = colors.sky, bg = colors.surface0 },
     }
 )
@@ -257,7 +257,7 @@ add_active(
 add_active(
     2, {
         provider = 'diagnostic_hints',
-        enabled = function() return diagnostics_enabled('HINT') end,
+        enabled = function() return diagnostics_exist('HINT') end,
         hl = { fg = colors.teal, bg = colors.surface0 },
     }
 )

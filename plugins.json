@@ -8,7 +8,7 @@
     "hrsh7th/cmp-path",
     "hrsh7th/nvim-cmp",
     "https://git.sr.ht/~reggie/autosession.nvim",
-    "https://gitlab.com/HiPhish/nvim-ts-rainbow2",
+    "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
     "jose-elias-alvarez/null-ls.nvim",
     "kyazdani42/nvim-web-devicons",
     "lewis6991/gitsigns.nvim",

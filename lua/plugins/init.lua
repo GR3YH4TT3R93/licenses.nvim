@@ -49,7 +49,6 @@ require('nvim-treesitter.configs').setup({
         additional_vim_regex_highlighting = false,
     },
     matchup = { enable = true },
-    rainbow = { enable = true, disable = ts_disable },
 })
 
 -- nvim-treesitter-context
@@ -164,6 +163,22 @@ l.register(
     }
 )
 
+-- rainbow-delimiters.nvim
+vim.g.rainbow_delimiters = {
+    strategy = { [''] = require('rainbow-delimiters').strategy['global'] },
+    query = { [''] = 'rainbow-delimiters', lua = 'rainbow-blocks' },
+    highlight = {
+        'RainbowDelimiterRed',
+        'RainbowDelimiterYellow',
+        'RainbowDelimiterBlue',
+        'RainbowDelimiterOrange',
+        'RainbowDelimiterGreen',
+        'RainbowDelimiterViolet',
+        'RainbowDelimiterCyan',
+    },
+}
+
+
 -- stabilize.nvim
 require('stabilize').setup({ ignore = { filetype = { 'help', 'list' } } })
 
@@ -179,17 +194,7 @@ l.register(
             local actions = require('telescope.actions')
             telescope.setup {
                 defaults = {
-                    borderchars = {
-                        '─',
-                        '│',
-                        '─',
-                        '│',
-                        '┌',
-                        '┐',
-                        ' ┘',
-                        '└',
-                    },
-                    -- dynamic_preview_title = true,
+                    dynamic_preview_title = true,
                     results_title = false,
                     prompt_title = false,
                     layout_config = {
@@ -289,7 +294,7 @@ end
 for _, plugin in ipairs({
     'dot_repeat',
     'tasks',
-    'vimdoc'
+    'vimdoc',
 })
 do
     add_local(plugin .. '.nvim')

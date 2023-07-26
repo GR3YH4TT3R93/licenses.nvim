@@ -153,6 +153,7 @@ local cc = (tonumber(vim.o.cc) or 80) - 1
 local enable, disable = { enable = true }, { enable = false }
 local servers = {
     'clangd',
+    'denols',
     'ltex',
     {
         'pylsp',
@@ -341,6 +342,7 @@ vim.lsp.buf.format = function(opts)
     cmd.retab()
     cmd.doautocmd('TextChanged')
     pcall(cmd.loadview)
+    vim.diagnostic.show()
 end
 
 local telescope = function(s)

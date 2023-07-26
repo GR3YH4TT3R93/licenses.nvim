@@ -146,13 +146,13 @@ local highlights = {
     TreesitterContextLineNumber = { bg = c.mantle, fg = c.lavender, sp = c.blue },
 
     -- nvim-ts-rainbow
-    TSRainbowRed = { fg = c.maroon },
-    TSRainbowYellow  = { fg = c.yellow },
-    TSRainbowBlue  = { fg = c.blue },
-    TSRainbowOrange  = { fg = c.peach },
-    TSRainbowGreen  = { fg = c.green },
-    TSRainbowViolet  = { fg = c.mauve },
-    TSRainbowCyan  = { fg = c.teal},
+    RainbowDelimiterRed = { fg = c.maroon },
+    RainbowDelimiterYellow = { fg = c.yellow },
+    RainbowDelimiterBlue = { fg = c.blue },
+    RainbowDelimiterOrange = { fg = c.peach },
+    RainbowDelimiterGreen = { fg = c.green },
+    RainbowDelimiterViolet = { fg = c.mauve },
+    RainbowDelimiterCyan = { fg = c.teal },
 
     -- telescope.nvim
     TelescopeBorder = { link = 'FloatBorder' },

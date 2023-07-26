@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 from argparse import ArgumentParser
+from shutil import rmtree
 
 
 def err(msg: str):
@@ -53,6 +54,7 @@ def clean(plugins: list[dict]):
     for sm in [s.strip().split(" ")[1] for s in res.stdout.splitlines(False)]:
         if not any(v["name"] == sm for v in plugins):
             git(["rm", sm])
+            rmtree(".git/modules/" + sm)
 
 
 def install(plugin: dict):

@@ -213,8 +213,8 @@ call s:hi('qfLineNr', s:yellow)
 
 " vim terminal
 let terminal_ansi_colors = [ 
-    \s:overlay0, s:red, s:green, s:yellow, s:blue, s:pink, s:sky, s:text,
-    \s:overlay1, s:red, s:green, s:yellow, s:blue, s:pink, s:sky, s:text
+    \s:surface1, s:red, s:green, s:yellow, s:blue, s:pink, s:teal, s:subtext1,
+    \s:surface2, s:red, s:green, s:yellow, s:blue, s:pink, s:teal, s:subtext0
 \]
 
 " nvim terminal

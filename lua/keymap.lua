@@ -10,9 +10,10 @@ local telescope = function(action, opts)
 end
 
 for _, keymap in ipairs({
-    { '', '<C-/>g', telescope('live_grep') },
-    { '', '<C-/>m', telescope('help_tags') },
-    { '', '<C-/>t', telescope('find_files') },
+    { '', '<C-_>g', telescope('live_grep') },
+    { '', '<C-_>m', telescope('help_tags') },
+    { '', '<C-_>p', telescope('git_files') },
+    { '', '<C-_>t', telescope('find_files') },
     {
         '',
         '<C-/>z',
