@@ -36,8 +36,8 @@ for _, keymap in ipairs({
             wo.foldmethod = fm
         end,
     },
-    { 'n', '<A-e>', dot_repeat.mk_cmd("move .-2") },
-    { 'n', '<A-n>', dot_repeat.mk_cmd("move .+1") },
+    { 'n', '<A-e>', dot_repeat.mk_cmd('move .-2') },
+    { 'n', '<A-n>', dot_repeat.mk_cmd('move .+1') },
     { 'n', '<Space>', lsp.hover },
 }) do
     local modes, lhs, rhs, opts = unpack(keymap)
