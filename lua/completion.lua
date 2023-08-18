@@ -156,6 +156,35 @@ local servers = {
     'denols',
     'ltex',
     {
+        'lua_ls',
+        {
+            settings = {
+                Lua = {
+                    diagnostics = { globals = { 'vim' } },
+                    format = {
+                        quote_style = 'single',
+                        enable = true,
+                        defaultConfig = {
+                            max_line_length = tostring(cc),
+                            trailing_table_separator = 'smart',
+                            align_function_params = 'false',
+                            align_continuous_assign_statement = 'false',
+                            align_continuous_rect_table_field = 'false',
+                            align_array_table = 'false',
+                            break_all_list_when_line_exceed = 'true',
+                            auto_collapse_lines = 'true',
+                        },
+                    },
+                    hint = disable,
+                    -- hint = enable,
+                    runtime = { version = 'LuaJIT', path = vim.o.path },
+                    telemetry = disable,
+                    workspace = { library = api.nvim_get_runtime_file('', true) },
+                },
+            },
+        },
+    },
+    {
         'pylsp',
         {
             settings = {
@@ -203,35 +232,6 @@ local servers = {
             },
         },
     },
-    {
-        'lua_ls',
-        {
-            settings = {
-                Lua = {
-                    diagnostics = { globals = { 'vim' } },
-                    format = {
-                        quote_style = 'single',
-                        enable = true,
-                        defaultConfig = {
-                            max_line_length = tostring(cc),
-                            trailing_table_separator = 'smart',
-                            align_function_params = 'false',
-                            align_continuous_assign_statement = 'false',
-                            align_continuous_rect_table_field = 'false',
-                            align_array_table = 'false',
-                            break_all_list_when_line_exceed = 'true',
-                            auto_collapse_lines = 'true',
-                        },
-                    },
-                    hint = disable,
-                    -- hint = enable,
-                    runtime = { version = 'LuaJIT', path = vim.o.path },
-                    telemetry = disable,
-                    workspace = { library = api.nvim_get_runtime_file('', true) },
-                },
-            },
-        },
-    },
 }
 
 api.nvim_create_augroup('nvim-lightbulb', {})
@@ -261,7 +261,27 @@ local defaults = {
             -- the above should be enough but is not, hence the next line
             vim.lsp.semantic_tokens.stop(bufnr, client.id)
         end
+        -- TODO: this but better:
+        -- if client.server_capabilities.documentHighlightProvider then
+        --     vim.api.nvim_create_augroup("lsp_document_highlight",
+        --         { clear = true })
+        --     vim.api.nvim_clear_autocmds { buffer = bufnr, group =
+        --     "lsp_document_highlight" }
+        --     vim.api.nvim_create_autocmd("CursorHold", {
+        --         callback = vim.lsp.buf.document_highlight,
+        --         buffer = bufnr,
+        --         group = "lsp_document_highlight",
+        --         desc = "Document Highlight",
+        --     })
+        --     vim.api.nvim_create_autocmd("CursorMoved", {
+        --         callback = vim.lsp.buf.clear_references,
+        --         buffer = bufnr,
+        --         group = "lsp_document_highlight",
+        --         desc = "Clear All the References",
+        --     })
+        -- end
     end,
+    single_file_support = true,
 }
 
 local lspconfig = require('lspconfig')

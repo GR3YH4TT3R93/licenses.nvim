@@ -18,6 +18,7 @@
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-treesitter/nvim-treesitter-context",
+    "rafamadriz/friendly-snippets",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
     "simrat39/inlay-hints.nvim",

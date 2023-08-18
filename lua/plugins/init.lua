@@ -138,7 +138,13 @@ require('luasnip').setup({
 })
 vim.api.nvim_create_autocmd(
     'VimEnter',
-    { callback = require('luasnip.loaders.from_lua').lazy_load }
+    {
+        callback = function()
+            require('luasnip').filetype_extend('typescriptreact', { 'html' })
+            require('luasnip.loaders.from_lua').lazy_load()
+            require('luasnip.loaders.from_vscode').lazy_load()
+        end,
+    }
 )
 
 -- neodev.nvim

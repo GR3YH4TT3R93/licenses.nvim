@@ -10,13 +10,23 @@ local telescope = function(action, opts)
 end
 
 for _, keymap in ipairs({
+    -- each of <C-/> and <C-_> work in some terminals but not some others
+    { '', '<C-/>g', telescope('live_grep') },
+    { '', '<C-/>m', telescope('help_tags') },
+    { '', '<C-/>p', telescope('git_files') },
+    { '', '<C-/>t', telescope('find_files') },
+    {
+        '',
+        '<C-/>z',
+        telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
+    },
     { '', '<C-_>g', telescope('live_grep') },
     { '', '<C-_>m', telescope('help_tags') },
     { '', '<C-_>p', telescope('git_files') },
     { '', '<C-_>t', telescope('find_files') },
     {
         '',
-        '<C-/>z',
+        '<C-_>z',
         telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
     },
     { '', '<Tab>a', lsp.code_action },

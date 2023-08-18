@@ -4,6 +4,15 @@ local lsp = require('feline.providers.lsp')
 
 local components = { active = { {}, {}, {} }, inactive = { {}, {} } }
 
+-- TODO: :h feline-themes
+-- local get_hl = function(name)
+--     local hl = vim.api.nvim_get_hl(0, { name = name })
+--     return {
+--         bg = string.format('#%06x', hl.bg),
+--         fg = string.format('#%06x', hl.fg),
+--     }
+-- end
+
 local mode_colors = {
     ['n'] = { 'NORMAL', colors.blue },
     ['no'] = { 'N-PENDING', colors.blue },
