@@ -186,7 +186,15 @@ vim.g.rainbow_delimiters = {
 
 
 -- stabilize.nvim
-require('stabilize').setup({ ignore = { filetype = { 'help', 'list' } } })
+require('stabilize').setup({
+    ignore = {
+        buftype = { "quickfix", "loclist" },
+        filetype = {
+            'help',
+            'list'
+        }
+    }
+})
 
 -- telescope.nvim
 l.register(
