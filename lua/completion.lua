@@ -357,7 +357,7 @@ null_ls.setup({
 local _format = vim.lsp.buf.format
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.format = function(opts)
-    cmd.mkview()
+    pcall(cmd.mkview)
     _format(vim.tbl_deep_extend('force', { timeout_ms = 7500 }, opts or {}))
     cmd.retab()
     cmd.doautocmd('TextChanged')
