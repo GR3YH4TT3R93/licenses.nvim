@@ -78,3 +78,4 @@ syntax on
 runtime minimal/plugins.vim
 runtime minimal/keymap.vim
 runtime minimal/autocmd.vim
+runtime minimal/usercmd.vim

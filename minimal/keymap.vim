@@ -24,5 +24,6 @@ tnoremap <Esc> <C-\><C-N>
 vnoremap <silent> <A-e> :move '<-2<CR>gv
 vnoremap <silent> <A-n> :move '>+1<CR>gv
 
+xnoremap ; pgvy
 xnoremap u% <Plug>(matchup-i%)
 xnoremap x% <Plug>(matchup-z%)
