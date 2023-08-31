@@ -10,7 +10,18 @@ require('autosession').setup()
 require('plugins/feline')
 
 -- gitsigns.nvim
-if fn.executable('git') == 1 then require('gitsigns').setup() end
+if fn.executable('git') == 1 then
+    require('gitsigns').setup(
+        {
+            diff_opts = {
+                algorithm = 'minimal', internal = true, linematch = 60
+            },
+            current_line_blame = true,
+            numhl = true,
+            trouble = true,
+        }
+    )
+end
 
 -- nvim-dap
 l.register(
@@ -114,6 +125,7 @@ l.register(
         commands = { 'License*' },
         modules = { 'licenses' },
         setup = function()
+            -- TODO: proper types in licenses.nvim
             require('licenses').setup(
                 {
                     copyright_holder = 'reggie',
@@ -187,13 +199,7 @@ vim.g.rainbow_delimiters = {
 
 -- stabilize.nvim
 require('stabilize').setup({
-    ignore = {
-        buftype = { "quickfix", "loclist" },
-        filetype = {
-            'help',
-            'list'
-        }
-    }
+    ignore = { buftype = { "quickfix", "loclist" }, filetype = { 'help', 'list' } },
 })
 
 -- telescope.nvim

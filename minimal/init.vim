@@ -17,6 +17,7 @@ else
 endif
 set colorcolumn=80
 set cursorline
+set diffopt+=linematch:60,algorithm:minimal
 set display=lastline,truncate
 set expandtab
 if has('nvim-0.9')
