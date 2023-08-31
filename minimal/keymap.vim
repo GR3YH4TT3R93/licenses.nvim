@@ -4,9 +4,10 @@ noremap <silent> <Leader>d :Commentary<CR>
 noremap <expr> <nowait> z
     \ getcurpos()[2] != 1 && indent('.') >= getcurpos()[2] - 1 ? '0' : 'b'
 
-inoremap <CR> <Plug>delimitMateCR
 inoremap <C-l> <C-g>u<C-u>
+inoremap <C-n> <Nop>
 inoremap <C-w> <C-g>u<C-w>
+inoremap <CR> <Plug>delimitMateCR
 
 nnoremap <silent> <C-i>
     \ :nohlsearch<C-r>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-l>
