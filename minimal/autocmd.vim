@@ -9,10 +9,10 @@ augroup vimrc
     " terminal
     if has('nvim')
         au BufEnter,TermOpen term://* startinsert
-        au TermOpen term://* setlocal nonumber norelativenumber
+        au TermOpen * setlocal nonumber norelativenumber
     else
         au BufEnter,TerminalOpen term://* startinsert
-        au TerminalOpen term://* setlocal nonumber norelativenumber
+        au TerminalOpen * setlocal nonumber norelativenumber
     endif
     au BufLeave term:://* stopinsert
 
@@ -22,10 +22,10 @@ augroup vimrc
     " number column
     au BufEnter,FocusGained,InsertLeave,WinEnter *
         \ if &number && mode() != "i"
-        \| set relativenumber
+        \| setlocal relativenumber
         \| endif
     au BufLeave,FocusLost,InsertEnter,WinLeave *
         \ if &number
-        \| set norelativenumber
+        \| setlocal norelativenumber
         \| endif
 augroup end
