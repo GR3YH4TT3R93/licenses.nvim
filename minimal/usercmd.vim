@@ -1,9 +1,15 @@
-function! s:DiffWithSaved()
-    let filetype=&ft
+function! s:DiffSaved()
+    let filetype=&filetype
+
     diffthis
-    vnew | r # | normal! 1Gdd
+    vnew
+    read #
+    normal! ggdd
     diffthis
-    exe 'setlocal buftype=nofile bh=wipe nobl noswf ro filetype=' . filetype
+    setlocal buftype=nofile bh=wipe nobl noswf ro
+    let &filetype=filetype
+
+    wincmd h
 endfunction
 
-com! DiffSaved call s:DiffWithSaved()
+com! DiffSaved call s:DiffSaved()
