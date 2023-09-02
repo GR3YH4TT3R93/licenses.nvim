@@ -73,7 +73,6 @@ if !has('nvim')
     packloadall
 endif
 
-helptags ALL
 syntax on
 
 runtime minimal/plugins.vim

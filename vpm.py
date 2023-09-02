@@ -105,7 +105,12 @@ def update(plugin: dict):
     )
 
 
-def main(action: str, plugins_path: list[str], pack_path: str) -> int:
+def main(
+    action: str,
+    plugins_path: list[str],
+    pack_path: str,
+    help_tags_cmd: list[str],
+) -> int:
     if not (plugins := get_plugins(plugins_path)):
         return 1
 
@@ -147,6 +152,10 @@ def main(action: str, plugins_path: list[str], pack_path: str) -> int:
         check=False,
     )
 
+    if len(help_tags_cmd):
+        err(" ".join(help_tags_cmd))
+        subprocess.run(help_tags_cmd, check=True)
+
     return 0
 
 
@@ -171,5 +180,11 @@ if __name__ == "__main__":
             + "/nvim/site/pack/vpm"
         ],
     )
+    p.add_argument("-t", "--tags", nargs="?", const="nvim")
     parsed = p.parse_args()
-    sys.exit(main(parsed.action[0], parsed.plugins, parsed.dir[0]))
+
+    tags_cmd = []
+    if parsed.tags:
+        tags_cmd = [parsed.tags, "--headless", "+helptags ALL", "+q"]
+
+    sys.exit(main(parsed.action[0], parsed.plugins, parsed.dir[0], tags_cmd))
