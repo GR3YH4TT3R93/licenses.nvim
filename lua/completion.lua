@@ -314,7 +314,21 @@ null_ls.setup({
         }),
         null_ls.builtins.formatting.prettier.with({
             extra_args = function(params)
-                return { '--print-width', cc, '--tab-width', tab_size(params) }
+                local args = {
+                    '--print-width',
+                    cc,
+                    '--tab-width',
+                    tab_size(params),
+                }
+
+                if fn.fnamemodify(params.bufname, ':e') == ''
+                then
+                    args = vim.list_extend(
+                        { '--parser', vim.bo[params.bufnr].filetype }, args
+                    )
+                end
+
+                return args
             end,
         }),
         null_ls.builtins.formatting.shfmt.with({
