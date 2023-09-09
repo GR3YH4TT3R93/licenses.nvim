@@ -219,9 +219,12 @@ local servers = {
         {
             settings = {
                 ['rust-analyzer'] = {
-                    checkOnSave = { command = 'clippy' },
+                    checkOnSave = true,
+                    check = { command = 'clippy' },
+                    cargo = { noDefaultFeatures = false },
                     completion = { privateEditable = enable },
                     hover = { actions = { references = enable, run = disable } },
+                    imports = { prefer = { no = { std = true } } },
                     rustfmt = {
                         extraArgs = {
                             '--config',
@@ -309,7 +312,10 @@ null_ls.setup({
         null_ls.builtins.code_actions.gitsigns,
         null_ls.builtins.code_actions.shellcheck,
         null_ls.builtins.diagnostics.shellcheck.with({
-            extra_args = { '--enable=all', '--exclude=SC1071,SC2312,SC2148,SC3057' },
+            extra_args = { 
+                '--enable=all',
+                '--exclude=SC1071,SC2312,SC2148,SC3057',
+            },
             extra_filetypes = { 'zsh' },
         }),
         null_ls.builtins.formatting.prettier.with({
