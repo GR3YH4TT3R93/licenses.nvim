@@ -3,6 +3,7 @@
     "andymass/vim-matchup",
     "https://git.sr.ht/~reggie/colemak_dh.nvim",
     "https://git.sr.ht/~reggie/cursorword.vim",
+    "https://git.sr.ht/~reggie/showmarks.vim",
     "tpope/vim-commentary",
     "tpope/vim-eunuch"
 ]

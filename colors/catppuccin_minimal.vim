@@ -221,3 +221,9 @@ let terminal_ansi_colors = [
 for i in range(0, len(g:terminal_ansi_colors) - 1)
     execute printf("let g:terminal_color_%d='%s'", i, terminal_ansi_colors[i])
 endfor
+
+" showmarks
+call s:hi('ShowMarksLower', s:blue, s:none, s:bold)
+call s:hi('ShowMarksUpper', s:blue, s:none, s:bold)
+call s:hi('ShowMarksOther', s:blue, s:none, s:bold)
+call s:hi('ShowMarksMulti', s:blue, s:none, s:bold)

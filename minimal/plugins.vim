@@ -9,6 +9,12 @@ let delimitMate_balance_matchpairs=1
 let delimitMate_nesting_quotes=['`']
 let delimitMate_expand_cr=1
 
+" showmarks.vim
+
+let showmarks_autoload=1
+let showmarks_include = 
+    \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.'\"`^<>[]{}()"
+
 " vim-matchup
 let matchup_delim_nomids=1
 let matchup_delim_noskips=2
