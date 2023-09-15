@@ -110,7 +110,15 @@ end
 ---@param ... U
 ---@return T
 M.get_val = function(v, ...)
-    if type(v) == 'function' then return ... and v(...) or v() end
+    if type(v) == 'function'
+    then
+        if ...
+        then
+            return v(...)
+        else
+            return v()
+        end
+    end
     return v
 end
 
