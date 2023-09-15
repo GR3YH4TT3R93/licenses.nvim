@@ -80,7 +80,7 @@ M.update = function(bufnr, config)
     })
 
 
-    local copyrights = M.get_copyright_info(bufnr)
+    local copyrights = M.get(bufnr)
     if not copyrights then return end
 
     local cs = util.get_commentstring(bufnr)

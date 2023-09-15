@@ -10,6 +10,7 @@ local util = require('licenses/util')
 
 local m = {}
 
+-- FIX: this one has poor performance for some reason
 m.insert = function(opts)
     local origin_bufnr = api.nvim_get_current_buf()
     local config = licenses.get_config(origin_bufnr)
