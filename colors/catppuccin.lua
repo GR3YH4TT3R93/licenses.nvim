@@ -150,7 +150,7 @@ local highlights = {
     RainbowDelimiterYellow = { fg = c.yellow },
     RainbowDelimiterBlue = { fg = c.blue },
     RainbowDelimiterOrange = { fg = c.peach },
-    RainbowDelimiterGreen = { fg = c.green },
+    RainbowDelimiterGreen = { fg = c.sapphire },
     RainbowDelimiterViolet = { fg = c.mauve },
     RainbowDelimiterCyan = { fg = c.teal },
 
