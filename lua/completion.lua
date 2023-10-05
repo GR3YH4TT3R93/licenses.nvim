@@ -142,7 +142,7 @@ cmp.setup({
 cmp.setup.cmdline(
     ':', {
         sources = get_sources(
-            'path', { name = 'cmdline', option = { ignore_cmds = { "!" } } }
+            'path', { name = 'cmdline', option = { ignore_cmds = {} } }
         ),
     }
 )
@@ -228,22 +228,28 @@ local servers = {
                     rustfmt = {
                         extraArgs = {
                             '--config',
-                            'max_width=' .. cc .. ',newline_style=Unix',
+                            table.concat({
+                                'max_width=' .. cc,
+                                'newline_style=Unix',
+                                'format_strings=true',
+                            }, ','),
                         },
                     },
                 },
             },
         },
     },
+    'texlab',
+    { 'typst_lsp', { settings = { exportPdf = 'never' } } },
 }
 
 api.nvim_create_augroup('nvim-lightbulb', {})
 
-require('inlay-hints').setup()
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.offsetEncoding = { 'utf-16' }
+
 local defaults = {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(
-        lsp.protocol.make_client_capabilities()
-    ),
+    capabilities = capabilities,
     on_attach = function(client, bufnr)
         api.nvim_create_autocmd(
             { 'CursorHold', 'CursorHoldI', 'CursorMoved', 'DiagnosticChanged' },
@@ -253,15 +259,13 @@ local defaults = {
                 group = 'nvim-lightbulb',
             }
         )
-        if client.server_capabilities.inlayHintProvider
-        then
-            require('inlay-hints').on_attach(client, bufnr)
-        end
+        require("lsp-inlayhints").on_attach(client, bufnr)
+
+        -- print(vim.inspect(vim.tbl_keys(client)))
 
         if client.name == 'lua_ls'
         then
             client.server_capabilities.semanticTokensProvider = nil
-            -- the above should be enough but is not, hence the next line
             vim.lsp.semantic_tokens.stop(bufnr, client.id)
         end
         -- TODO: this but better:
@@ -285,6 +289,7 @@ local defaults = {
         -- end
     end,
     single_file_support = true,
+    flags = { debounce_text_changes = 1500 },
 }
 
 local lspconfig = require('lspconfig')
@@ -312,11 +317,17 @@ null_ls.setup({
         null_ls.builtins.code_actions.gitsigns,
         null_ls.builtins.code_actions.shellcheck,
         null_ls.builtins.diagnostics.shellcheck.with({
-            extra_args = { 
+            extra_args = {
                 '--enable=all',
                 '--exclude=SC1071,SC2312,SC2148,SC3057',
             },
             extra_filetypes = { 'zsh' },
+        }),
+        null_ls.builtins.formatting.clang_format.with({
+            extra_args = {
+                '--style=file:'
+                .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
+            },
         }),
         null_ls.builtins.formatting.prettier.with({
             extra_args = function(params)
@@ -324,7 +335,8 @@ null_ls.setup({
                     '--print-width',
                     cc,
                     '--tab-width',
-                    tab_size(params),
+                    tab_size(
+                        params)
                 }
 
                 if fn.fnamemodify(params.bufname, ':e') == ''
@@ -378,7 +390,15 @@ local _format = vim.lsp.buf.format
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.format = function(opts)
     pcall(cmd.mkview)
-    _format(vim.tbl_deep_extend('force', { timeout_ms = 7500 }, opts or {}))
+    _format(
+        vim.tbl_deep_extend(
+            'force',
+            { timeout_ms = 7500 },
+            opts or {},
+            ---@diagnostic disable-next-line: undefined-field
+            vim.b.format_opts or {}
+        )
+    )
     cmd.retab()
     cmd.doautocmd('TextChanged')
     pcall(cmd.loadview)
