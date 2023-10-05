@@ -51,6 +51,7 @@ vim.treesitter.language.register('bash', 'oil')
 vim.treesitter.language.register('bash', 'zsh')
 
 local ts_disable = { 'vimdoc' }
+---@diagnostic disable-next-line: missing-fields
 require('nvim-treesitter.configs').setup({
     sync_install = false,
     auto_install = true,
@@ -63,6 +64,7 @@ require('nvim-treesitter.configs').setup({
 })
 
 -- nvim-treesitter-context
+---@diagnostic disable-next-line: missing-fields
 require('treesitter-context').setup({
     enable = true,
     max_lines = 0,
@@ -119,27 +121,24 @@ l.register(
 )
 
 
-l.register(
-    'licenses.nvim',
-    {
-        commands = { 'License*' },
-        modules = { 'licenses' },
-        setup = function()
-            -- TODO: proper types in licenses.nvim
-            require('licenses').setup(
-                {
-                    copyright_holder = 'reggie',
-                    email = 'contact<at>reggie<dot>re',
-                    license = 'MIT',
-                    remember_previous_id = true,
-                    skip_lines = { '^#!', '^# shellcheck ' },
-                    wrap_width = tonumber(vim.o.cc) - 1,
-                }
-            )
-            require('luasnip.loaders.from_lua').lazy_load()
-        end,
-    }
-)
+require('licenses').setup({
+    copyright_holder = 'Ash',
+    email = 'contact<at>ash<dot>fail',
+    license = 'MIT',
+    remember_previous_id = true,
+    skip_lines = { '^#!', '^# shellcheck ' },
+    wrap_width = tonumber(vim.o.cc) - 1,
+    -- XXX: consider making this default in licenses.nvim
+    write_license_to_file = function(id)
+        local file = './LICENSES/' .. id .. '.txt'
+
+        if fn.filereadable(file) == 1 then return false end
+
+        return fn.confirm(
+            'Also write license to ' .. file .. '?', '&Yes\n&No', 2
+        ) == 1
+    end,
+})
 
 -- LuaSnip
 require('luasnip').setup({
@@ -243,7 +242,6 @@ l.register(
                 extensions = { ['licenses-nvim'] = { default_action = 'pick' } },
             }
 
-            l.load('licenses.nvim')
             telescope.load_extension('licenses-nvim')
         end,
     }
@@ -307,22 +305,13 @@ l.register(
 
 -- WIP personal plugins
 local config = fn.stdpath('config')
-local add_local = function(plugin)
-    cmd.set(string.format('runtimepath+=%s/local/%s', config, plugin))
-end
-
 for _, plugin in ipairs({
     'dot_repeat',
-    'tasks',
+    'synctex',
     'vimdoc',
 })
 do
-    add_local(plugin .. '.nvim')
+    cmd.set(
+        string.format('runtimepath+=%s/local/%s', config, plugin .. '.nvim')
+    )
 end
-
-require('tasks').setup()
-require('tasks').register({
-    name = 'build.sh',
-    cmd = './build.sh',
-    condition = function() return vim.fn.executable('./build.sh') == 1 end,
-})
