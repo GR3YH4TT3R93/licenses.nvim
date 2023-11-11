@@ -102,39 +102,39 @@ dap.configurations.rust = {
 }
 
 require('dapui').setup({
-    controls = { element = "repl", enabled = true },
+    controls = { element = 'repl', enabled = true },
     element_mappings = {},
     expand_lines = true,
-    floating = { border = "single", mappings = { close = { "q", "<Esc>" } } },
+    floating = { border = 'single', mappings = { close = { 'q', '<Esc>' } } },
     force_buffers = true,
-    icons = { collapsed = "", current_frame = "", expanded = "" },
+    icons = { collapsed = '', current_frame = '', expanded = '' },
     layouts = {
         {
             elements = {
-                { id = "scopes", size = 0.25 },
-                { id = "breakpoints", size = 0.25 },
-                { id = "stacks", size = 0.25 },
-                { id = "watches", size = 0.25 },
+                { id = 'scopes', size = 0.25 },
+                { id = 'breakpoints', size = 0.25 },
+                { id = 'stacks', size = 0.25 },
+                { id = 'watches', size = 0.25 },
             },
-            position = "left",
+            position = 'left',
             size = 40,
         },
         {
             elements = {
-                { id = "repl", size = 0.5 },
-                { id = "console", size = 0.5 },
+                { id = 'repl', size = 0.5 },
+                { id = 'console', size = 0.5 },
             },
-            position = "bottom",
+            position = 'bottom',
             size = 10,
         },
     },
     mappings = {
-        edit = "u",
-        expand = { "<CR>", "<2-LeftMouse>" },
-        open = "y",
-        remove = "s",
-        repl = "p",
-        toggle = "b",
+        edit = 'u',
+        expand = { '<CR>', '<2-LeftMouse>' },
+        open = 'y',
+        remove = 's',
+        repl = 'p',
+        toggle = 'b',
     },
     render = { indent = 1, max_value_lines = 100 },
 })
