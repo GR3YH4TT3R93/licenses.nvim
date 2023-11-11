@@ -281,15 +281,19 @@ M.get_config = function(bufnr, overrides)
     c.vars = vim.tbl_extend('force', {}, c.vars or {})
     if not c.vars.copyright
     then
-        c.vars.copyright = function(_, original)
+        c.vars.copyright = function(id, original)
             if not (c.copyright_holder or c.email)
             then
                 return original
             end
 
             local copyright = os.date('%Y')
-                .. (c.copyright_holder and ' ' .. c.copyright_holder or '')
-                .. (c.email and ' ' .. c.email or '')
+                .. (
+                    c.copyright_holder
+                    and ' ' .. util.get_val(c.copyright_holder, id)
+                    or ''
+                )
+                .. (c.email and ' ' .. util.get_val(c.email, id) or '')
 
             if original:match('^[Cc]opyright')
             then
