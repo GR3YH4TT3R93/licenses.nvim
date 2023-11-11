@@ -7,11 +7,11 @@ local dap = require('dap')
 
 local fn = vim.fn
 
--- dap.adapters.lldb = {
---     type = 'executable',
---     command = '/usr/bin/lldb-vscode',
---     name = 'lldb',
--- }
+dap.adapters.lldb = {
+    type = 'executable',
+    command = '/usr/bin/lldb-vscode',
+    name = 'lldb',
+}
 
 dap.adapters.cppdbg = {
     id = 'cppdbg',
@@ -27,14 +27,15 @@ dap.configurations.cpp = {
         type = 'cppdbg',
         request = 'launch',
         program = function()
-            if not vim.g.dap_program
+            if not vim.g.dap_executable
             then
-                vim.g.dap_program = fn.input(
+                vim.g.dap_executable = fn.input(
                     'Path to executable: ',
-                    fn.getcwd() .. '/', 'file'
+                    fn.getcwd() .. '/',
+                    'file'
                 )
             end
-            return vim.g.dap_program
+            return vim.g.dap_executable
         end,
         cwd = '${workspaceFolder}',
         stopAtEntry = false,
@@ -54,55 +55,51 @@ dap.configurations.cpp = {
 }
 dap.configurations.c = dap.configurations.cpp
 
-local rustlib = fn.trim(
-    fn.system({ 'rustc', '--print', 'sysroot' })
-) .. '/lib/rustlib'
-if vim.v.shell_error == 0
-then
-    dap.configurations.rust = {
-        {
-            name = 'Launch',
-            type = 'cppdbg',
-            request = 'launch',
-            program = function()
-                if not vim.g.dap_program
-                then
-                    vim.g.dap_program = fn.input(
-                        'Path to executable: ',
-                        fn.getcwd() .. '/', 'file'
-                    )
+dap.configurations.rust = {
+    {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+            if not vim.g.dap_executable
+            then
+                vim.g.dap_executable = fn.input(
+                    'Path to executable: ',
+                    fn.getcwd() .. '/',
+                    'file'
+                )
+            end
+            return vim.g.dap_executable
+        end,
+        cwd = '${workspaceFolder}',
+        stopAtEntry = false,
+        args = function()
+            return vim.g.dap_args or {}
+        end,
+
+        initCommands = function()
+            local rustlib = fn.trim(
+                fn.system({ 'rustc', '--print', 'sysroot' }) or ''
+            ) .. '/lib/rustlib'
+
+            local commands = {
+                'command script import "' .. rustlib .. '/etc/lldb_lookup.py"',
+            }
+
+            local f = io.open(rustlib .. '/etc/lldb_commands')
+            if f
+            then
+                for line in f:lines()
+                do
+                    table.insert(commands, line)
                 end
-                return vim.g.dap_program
-            end,
-            cwd = '${workspaceFolder}',
-            stopAtEntry = false,
-            args = function()
-                return vim.g.dap_args or {}
-            end,
-            MIMode = 'lldb',
-            miDebuggerPath = fn.expand(
-                '~/.local/share/vscode-cpptools/lldb-mi'
-            ),
-            sourceLanguages = { 'rust' },
-            setupCommands = {
-                {
-                    text = string.format(
-                        'command script import "%s/etc/lldb_lookup.py"', rustlib
-                    ),
-                    description = 'enable rust support 1',
-                    ignoreFailures = false,
-                },
-                {
-                    text = string.format(
-                        'command source -s 0 "%s/etc/lldb_commands"', rustlib
-                    ),
-                    description = 'enable rust support 2',
-                    ignoreFailures = false,
-                },
-            },
-        },
-    }
-end
+                f:close()
+            end
+
+            return commands
+        end,
+    },
+}
 
 require('dapui').setup({
     controls = { element = "repl", enabled = true },
