@@ -38,4 +38,4 @@ information than this README, check it out by doing `:help licenses-nvim`.
 
 -   issue tracker: https://todo.sr.ht/~reggie/licenses.nvim
 -   mailing list: https://lists.sr.ht/~reggie/licenses.nvim
--   contact me directly: https://reggie.re/contact.html
+-   contact me directly: https://ash.fail/contact.html

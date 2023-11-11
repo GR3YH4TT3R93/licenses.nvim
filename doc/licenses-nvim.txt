@@ -371,7 +371,7 @@ one is added above, e.g.:
 
 would update to:
 >
-    SPDX-FileCopyrightText: 2023 reggie <contact<at>reggie<dot>re>
+    SPDX-FileCopyrightText: 2023 New Name contact@new_name.com
     SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>
 <
 Parameters: ~

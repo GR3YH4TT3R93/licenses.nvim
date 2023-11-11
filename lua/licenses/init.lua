@@ -1,9 +1,9 @@
--- SPDX-FileCopyrightText: 2023 reggie <contact<at>reggie<dot>re>
+-- SPDX-FileCopyrightText: 2023 Ash <contact@ash.fail>
 -- SPDX-License-Identifier: MIT
 
 -- MIT License
 
---  Copyright (c) 2023 reggie contact<at>reggie<dot>re
+--  Copyright (c) 2023 Ash contact@ash.fail
 
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to
@@ -459,7 +459,7 @@ M.fetch = function(id, callback) require('licenses/fetch')(id, callback) end
 ---
 --- would update to:
 --- ```
----     SPDX-FileCopyrightText: 2023 reggie <contact<at>reggie<dot>re>
+---     SPDX-FileCopyrightText: 2023 New Name contact@new_name.com
 ---     SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>
 --- ```
 ---@param bufnr integer Buffer handle
