@@ -6,6 +6,22 @@ local fn = vim.fn
 -- autosession.nvim
 require('autosession').setup()
 
+-- copilot.lua
+l.register(
+    'copilot.lua',
+    {
+        commands = { 'Copilot' },
+        setup = function()
+            require('copilot').setup({
+                suggestion = { enabled = false },
+                panel = { enabled = false },
+            })
+            vim.cmd.Copilot('disable')
+        end,
+    }
+)
+
+
 -- feline.nvim
 require('plugins/feline')
 
@@ -13,9 +29,7 @@ require('plugins/feline')
 if fn.executable('git') == 1 then
     require('gitsigns').setup(
         {
-            diff_opts = {
-                algorithm = 'minimal', internal = true, linematch = 60
-            },
+            diff_opts = { algorithm = 'minimal', internal = true, linematch = 60 },
             current_line_blame = true,
             numhl = true,
             trouble = true,
@@ -122,8 +136,14 @@ l.register(
 
 
 require('licenses').setup({
-    copyright_holder = 'Ash',
-    email = 'contact<at>ash<dot>fail',
+    copyright_holder = function()
+        ---@diagnostic disable-next-line: param-type-mismatch
+        return vim.trim(fn.system({ 'git', 'config', 'user.name' }))
+    end,
+    email = function()
+        ---@diagnostic disable-next-line: param-type-mismatch
+        return vim.trim(fn.system({ 'git', 'config', 'user.email' }))
+    end,
     license = 'MIT',
     remember_previous_id = true,
     skip_lines = { '^#!', '^# shellcheck ' },
@@ -195,11 +215,18 @@ vim.g.rainbow_delimiters = {
     },
 }
 
-
 -- stabilize.nvim
 require('stabilize').setup({
-    ignore = { buftype = { "quickfix", "loclist" }, filetype = { 'help', 'list' } },
+    force = true,
+    ignore = {
+        buftype = {},
+        filetype = {},
+        nested = "QuickFixCmdPost,DiagnosticChanged *",
+    },
 })
+
+-- synctex.nvim
+require('synctex').setup()
 
 -- telescope.nvim
 l.register(
@@ -306,8 +333,6 @@ l.register(
 -- WIP personal plugins
 local config = fn.stdpath('config')
 for _, plugin in ipairs({
-    'dot_repeat',
-    'synctex',
     'vimdoc',
 })
 do

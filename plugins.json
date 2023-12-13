@@ -8,7 +8,9 @@
     "hrsh7th/cmp-path",
     "hrsh7th/nvim-cmp",
     "https://git.sr.ht/~reggie/autosession.nvim",
+    "https://git.sr.ht/~reggie/dot_repeat.nvim",
     "https://git.sr.ht/~reggie/licenses.nvim",
+    "https://git.sr.ht/~reggie/synctex.nvim",
     "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
     "jose-elias-alvarez/null-ls.nvim",
     "kyazdani42/nvim-web-devicons",
@@ -22,11 +24,12 @@
     "rafamadriz/friendly-snippets",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
+    "zbirenbaum/copilot-cmp",
     { "repo": "folke/neodev.nvim", "opt": true },
     { "repo": "folke/trouble.nvim", "opt": true },
     { "repo": "hkupty/iron.nvim", "opt": true },
     { "repo": "kosayoda/nvim-lightbulb", "update": false },
-    { "repo": "lukas-reineke/indent-blankline.nvim", "commit": "v2.20.8" },
+    { "repo": "lukas-reineke/indent-blankline.nvim", "branch": "v2.20.8" },
     { "repo": "luukvbaal/stabilize.nvim", "branch": "0.8" },
     { "repo": "mfussenegger/nvim-dap", "opt": true },
     {
@@ -35,5 +38,6 @@
         "opt": true
     },
     { "repo": "rcarriga/nvim-dap-ui", "opt": true },
-    { "repo": "weilbith/nvim-code-action-menu", "opt": true, "update": false }
+    { "repo": "weilbith/nvim-code-action-menu", "opt": true, "update": false },
+    { "repo": "zbirenbaum/copilot.lua", "opt": true }
 ]
