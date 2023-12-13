@@ -43,6 +43,9 @@ set notimeout
 set nottimeout
 set nrformats-=octal
 set number
+if has('nvim')
+    let python3_host_prog = '/usr/bin/python3'
+endif
 set scrolloff=7
 set shiftwidth=4
 set sidescrolloff=5
