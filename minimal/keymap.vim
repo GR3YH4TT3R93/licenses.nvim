@@ -24,6 +24,8 @@ tnoremap <Esc> <C-\><C-N>
 
 vnoremap <silent> <A-e> :move '<-2<CR>gv
 vnoremap <silent> <A-n> :move '>+1<CR>gv
+vnoremap <silent> @ :<C-u>execute "'<,'>" . 'normal! @' . getcharstr()<CR>
+vnoremap <silent> Q :normal! Q<CR>
 
 xnoremap ; pgvy
 xnoremap u% <Plug>(matchup-i%)

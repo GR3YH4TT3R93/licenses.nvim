@@ -12,6 +12,7 @@ end
 for _, keymap in ipairs({
     -- each of <C-/> and <C-_> work in some terminals but not some others
     { '', '<C-/>g', telescope('live_grep') },
+    { '', '<C-/>i', telescope('lsp_document_symbols') },
     { '', '<C-/>m', telescope('help_tags') },
     { '', '<C-/>p', telescope('git_files') },
     { '', '<C-/>t', telescope('find_files') },
@@ -21,6 +22,7 @@ for _, keymap in ipairs({
         telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
     },
     { '', '<C-_>g', telescope('live_grep') },
+    { '', '<C-_>i', telescope('lsp_document_symbols') },
     { '', '<C-_>m', telescope('help_tags') },
     { '', '<C-_>p', telescope('git_files') },
     { '', '<C-_>t', telescope('find_files') },
@@ -32,9 +34,10 @@ for _, keymap in ipairs({
     { '', '<Tab>a', lsp.code_action },
     { '', '<Tab>m', lsp.hover },
     { '', '<Tab>p', lsp.rename },
+    { '', '<Tab>s', lsp.definition },
     { '', '<Tab>t', lsp.format },
     { '', '<Leader>b', ':TroubleToggle<CR>' },
-    { '', '<Leader>d', dot_repeat.mk_cmd('Commentary', { cmdtype = 'range' }) },
+    { '', '<Leader>d', dot_repeat.mk_cmd('Commentary', { type = 'range' }) },
     { '', '<Leader>t', lsp.format },
     {
         '',
@@ -46,13 +49,15 @@ for _, keymap in ipairs({
             wo.foldmethod = fm
         end,
     },
-    { 'n', '<A-e>', dot_repeat.mk_cmd('move .-2') },
-    { 'n', '<A-n>', dot_repeat.mk_cmd('move .+1') },
+    { '', '<A-e>', dot_repeat.mk_cmd('move .-2') },
+    { '', '<A-n>', dot_repeat.mk_cmd('move .+1') },
     { 'n', '<Space>', lsp.hover },
+    { 'v', '<A-e>', dot_repeat.mk_cmd('move \'<-2', { type = 'range' }) .. 'gv' },
+    { 'v', '<A-n>', dot_repeat.mk_cmd('move \'>+1', { type = 'range' }) .. 'gv' },
 }) do
     local modes, lhs, rhs, opts = unpack(keymap)
     ---@diagnostic disable-next-line: cast-local-type
-    modes = vim.fn.split(modes, '\\zs')
+    modes = vim.fn.split(modes, '\\zs') --[[@as table]]
     modes[1] = modes[1] or ''
     for _, mode in ipairs(modes)
     do
