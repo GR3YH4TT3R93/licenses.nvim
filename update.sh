@@ -2,4 +2,9 @@
 
 set -ex
 cd "$(dirname "${0}")"
-./vpm.py -t /usr/bin/nvim sync minimal/plugins.json plugins.json
+
+./vpm.py sync minimal/plugins.json plugins.json
+
+if [ "$(pwd | sed 's/\/.*\///')" = nvim ]; then
+    nvim --headless '+helptags ALL' +TSUpdateSync +q
+fi

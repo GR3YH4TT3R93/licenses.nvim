@@ -53,7 +53,7 @@ def clean(plugins: list[dict]):
     res = git(["submodule", "status"], capture_output=True, text=True)
     for sm in [s.strip().split(" ")[1] for s in res.stdout.splitlines(False)]:
         if not any(v["name"] == sm for v in plugins):
-            git(["rm", sm])
+            git(["rm", "--force", sm])
             rmtree(".git/modules/" + sm)
 
 
@@ -83,33 +83,28 @@ def install(plugin: dict):
 
 def update(plugin: dict):
     branch = plugin.get("branch")
+
     if branch:
+        os.chdir(plugin["name"])
+        git(["fetch", "--depth=1", "origin", branch])
+        git(["checkout", "--detach", "FETCH_HEAD"])
+        os.chdir("../..")
+    else:
         git(
             [
                 "submodule",
-                "set-branch",
-                "--branch",
-                branch,
+                "update",
+                "--force",
+                "--remote",
                 plugin["name"],
             ]
         )
-    git(
-        [
-            "submodule",
-            "update",
-            "--init",
-            "--recursive",
-            "--remote",
-            plugin["name"],
-        ]
-    )
 
 
 def main(
     action: str,
     plugins_path: list[str],
     pack_path: str,
-    help_tags_cmd: list[str],
 ) -> int:
     if not (plugins := get_plugins(plugins_path)):
         return 1
@@ -152,10 +147,6 @@ def main(
         check=False,
     )
 
-    if len(help_tags_cmd):
-        err(" ".join(help_tags_cmd))
-        subprocess.run(help_tags_cmd, check=True)
-
     return 0
 
 
@@ -180,11 +171,6 @@ if __name__ == "__main__":
             + "/nvim/site/pack/vpm"
         ],
     )
-    p.add_argument("-t", "--tags", nargs="?", const="nvim")
     parsed = p.parse_args()
 
-    tags_cmd = []
-    if parsed.tags:
-        tags_cmd = [parsed.tags, "--headless", "+helptags ALL", "+q"]
-
-    sys.exit(main(parsed.action[0], parsed.plugins, parsed.dir[0], tags_cmd))
+    sys.exit(main(parsed.action[0], parsed.plugins, parsed.dir[0]))
