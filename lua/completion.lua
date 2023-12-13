@@ -3,6 +3,8 @@ local cmd = vim.cmd
 local fn = vim.fn
 local lsp = vim.lsp
 
+require('copilot_cmp').setup()
+
 local cmp = require('cmp')
 local luasnip = require('luasnip')
 
@@ -125,6 +127,7 @@ cmp.setup({
         },
     },
     sources = get_sources(
+        'copilot',
         'nvim_lsp',
         'nvim_lsp_signature_help',
         'luasnip',
@@ -153,7 +156,6 @@ local cc = (tonumber(vim.o.cc) or 80) - 1
 local enable, disable = { enable = true }, { enable = false }
 local servers = {
     'clangd',
-    'denols',
     'ltex',
     {
         'lua_ls',
@@ -199,7 +201,7 @@ local servers = {
                         },
                         pylint = {
                             args = {
-                                '--enable-all-extensions',
+                                -- '--enable-all-extensions',
                                 '--good-names-rgxs=[a-z]',
                                 '--good-names=ex,Run,_',
                                 '--include-naming-hint=True',
@@ -220,7 +222,26 @@ local servers = {
             settings = {
                 ['rust-analyzer'] = {
                     checkOnSave = true,
-                    check = { command = 'clippy' },
+                    check = {
+                        command = 'clippy',
+                        extraArgs = {
+                            '--',
+                            '-W',
+                            'clippy::all',
+                            '-W',
+                            'clippy::correctness',
+                            '-W',
+                            'clippy::complexity',
+                            '-W',
+                            'clippy::nursery',
+                            '-W',
+                            'clippy::perf',
+                            '-W',
+                            'clippy::cargo',
+                            '-A',
+                            'clippy::cargo_common_metadata',
+                        },
+                    },
                     cargo = { noDefaultFeatures = false },
                     completion = { privateEditable = enable },
                     hover = { actions = { references = enable, run = disable } },
@@ -239,7 +260,6 @@ local servers = {
             },
         },
     },
-    'texlab',
     { 'typst_lsp', { settings = { exportPdf = 'never' } } },
 }
 
@@ -289,7 +309,7 @@ local defaults = {
         -- end
     end,
     single_file_support = true,
-    flags = { debounce_text_changes = 1500 },
+    flags = { debounce_text_changes = 2500 },
 }
 
 local lspconfig = require('lspconfig')
@@ -329,6 +349,7 @@ null_ls.setup({
                 .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
             },
         }),
+        null_ls.builtins.formatting.latexindent,
         null_ls.builtins.formatting.prettier.with({
             extra_args = function(params)
                 local args = {
@@ -336,7 +357,7 @@ null_ls.setup({
                     cc,
                     '--tab-width',
                     tab_size(
-                        params)
+                        params),
                 }
 
                 if fn.fnamemodify(params.bufname, ':e') == ''
@@ -406,8 +427,8 @@ vim.lsp.buf.format = function(opts)
 end
 
 local telescope = function(s)
-    return function(...)
-        require('lazyload').require('telescope.builtin')['lsp_' .. s](...)
+    return function()
+        require('lazyload').require('telescope.builtin')['lsp_' .. s]()
     end
 end
 
