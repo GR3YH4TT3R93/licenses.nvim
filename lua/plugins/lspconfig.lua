@@ -19,6 +19,7 @@ local disable = { enable = false }
 
 local servers = {
     'clangd',
+    'gopls',
     'ltex',
     {
         'lua_ls',
