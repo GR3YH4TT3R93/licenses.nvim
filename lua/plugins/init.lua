@@ -1,13 +1,18 @@
-local l = require('lazyload')
+local lazy = require('lazyload')
 
-local cmd = vim.cmd
 local fn = vim.fn
+
+-- bigger plugins with their own config files
+require('plugins/feline')
+require('plugins/lspconfig')
+require('plugins/null-ls')
+require('plugins/nvim-cmp')
 
 -- autosession.nvim
 require('autosession').setup()
 
 -- copilot.lua
-l.register(
+lazy.register(
     'copilot.lua',
     {
         commands = { 'Copilot' },
@@ -21,10 +26,6 @@ l.register(
     }
 )
 
-
--- feline.nvim
-require('plugins/feline')
-
 -- gitsigns.nvim
 if fn.executable('git') == 1 then
     require('gitsigns').setup(
@@ -37,54 +38,8 @@ if fn.executable('git') == 1 then
     )
 end
 
--- nvim-dap
-l.register(
-    'nvim-dap',
-    {
-        commands = { 'Dap*' },
-        modules = { 'dap', 'dapui' },
-        setup = function() require('plugins/nvim-dap') end,
-    }
-)
-
--- nvim-code-action-menu
-l.register('nvim-code-action-menu', { commands = { 'CodeActionMenu' } })
-
 -- nvim-colorizer
 require('colorizer').setup()
-
--- nvim-lightbulb
-require('nvim-lightbulb').setup({
-    sign = { enabled = true, priority = 10, text = 'A' },
-    autocmd = { enabled = false },
-})
-
--- nvim-treesitter
-vim.treesitter.language.register('bash', 'sh')
-vim.treesitter.language.register('bash', 'oil')
-vim.treesitter.language.register('bash', 'zsh')
-
-local ts_disable = { 'vimdoc' }
----@diagnostic disable-next-line: missing-fields
-require('nvim-treesitter.configs').setup({
-    sync_install = false,
-    auto_install = true,
-    highlight = {
-        enable = true,
-        disable = ts_disable,
-        additional_vim_regex_highlighting = false,
-    },
-    matchup = { enable = true },
-})
-
--- nvim-treesitter-context
----@diagnostic disable-next-line: missing-fields
-require('treesitter-context').setup({
-    enable = true,
-    max_lines = 0,
-    trim_scope = 'outer',
-    min_window_height = 0,
-})
 
 -- indent-blankline.nvim
 require('indent_blankline').setup({
@@ -95,7 +50,7 @@ require('indent_blankline').setup({
 })
 
 -- iron.nvim
-l.register(
+lazy.register(
     'iron.nvim',
     {
         commands = { 'Iron*' },
@@ -135,6 +90,7 @@ l.register(
 )
 
 
+---@diagnostic disable-next-line: missing-fields
 require('licenses').setup({
     copyright_holder = function()
         ---@diagnostic disable-next-line: param-type-mismatch
@@ -167,6 +123,7 @@ require('luasnip').setup({
     enable_autosnippets = true,
     store_selection_keys = '<C-n>',
 })
+
 vim.api.nvim_create_autocmd(
     'VimEnter',
     {
@@ -179,7 +136,7 @@ vim.api.nvim_create_autocmd(
 )
 
 -- neodev.nvim
-l.register(
+lazy.register(
     'neodev.nvim',
     {
         filetypes = { 'lua' },
@@ -199,6 +156,46 @@ l.register(
         end,
     }
 )
+
+-- nvim-code-action-menu
+lazy.register('nvim-code-action-menu', { commands = { 'CodeActionMenu' } })
+
+-- nvim-dap
+lazy.register(
+    'nvim-dap',
+    {
+        commands = { 'Dap*' },
+        modules = { 'dap', 'dapui' },
+        setup = function() require('plugins/nvim-dap') end,
+    }
+)
+
+-- nvim-treesitter
+vim.treesitter.language.register('bash', 'sh')
+vim.treesitter.language.register('bash', 'oil')
+vim.treesitter.language.register('bash', 'zsh')
+
+local ts_disable = { 'vimdoc' }
+---@diagnostic disable-next-line: missing-fields
+require('nvim-treesitter.configs').setup({
+    sync_install = false,
+    auto_install = true,
+    highlight = {
+        enable = true,
+        disable = ts_disable,
+        additional_vim_regex_highlighting = false,
+    },
+    matchup = { enable = true },
+})
+
+-- nvim-treesitter-context
+---@diagnostic disable-next-line: missing-fields
+require('treesitter-context').setup({
+    enable = true,
+    max_lines = 0,
+    trim_scope = 'outer',
+    min_window_height = 0,
+})
 
 -- rainbow-delimiters.nvim
 vim.g.rainbow_delimiters = {
@@ -229,7 +226,7 @@ require('stabilize').setup({
 require('synctex').setup()
 
 -- telescope.nvim
-l.register(
+lazy.register(
     'telescope.nvim',
     {
         commands = { 'Telescope' },
@@ -275,7 +272,7 @@ l.register(
 )
 
 -- trouble.nvim
-l.register(
+lazy.register(
     'trouble.nvim',
     {
         commands = { 'Trouble*' },
@@ -330,13 +327,8 @@ l.register(
     }
 )
 
--- WIP personal plugins
-local config = fn.stdpath('config')
-for _, plugin in ipairs({
-    'vimdoc',
-})
-do
-    cmd.set(
-        string.format('runtimepath+=%s/local/%s', config, plugin .. '.nvim')
-    )
-end
+-- cmd.set(
+--     string.format(
+--         'runtimepath+=%s/local/%s', fn.stdpath('config'), 'vimdoc.nvim'
+--     )
+-- )

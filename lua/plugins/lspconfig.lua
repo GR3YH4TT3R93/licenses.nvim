@@ -1,165 +1,32 @@
 local api = vim.api
-local cmd = vim.cmd
 local fn = vim.fn
+local cmd = vim.cmd
 local lsp = vim.lsp
 
-require('copilot_cmp').setup()
-
-local cmp = require('cmp')
-local luasnip = require('luasnip')
-
--- cmp fucks up mapping of i and u
-local fix_mapping = function() vim.keymap.set('n', 'u', 'i') end
-
-local cmp_next = function(fb)
-    if cmp.visible()
-    then
-        cmp.select_next_item()
-    elseif luasnip.expand_or_jumpable()
-    then
-        luasnip.expand_or_jump()
-    else
-        fb()
-    end
-    fix_mapping()
-end
-
-local cmp_prev = function(fb)
-    if cmp.visible()
-    then
-        cmp.select_prev_item()
-    elseif luasnip.jumpable(-1)
-    then
-        luasnip.jump(-1)
-    else
-        fb()
-    end
-    fix_mapping()
-end
-
----@param ... string|table
----@return table
-local get_sources = function(...)
-    return cmp.config.sources(
-        vim.tbl_map(
-            function(v)
-                if type(v) == 'string'
-                then
-                    return { name = v, dup = 0 }
-                else
-                    v.dup = 0
-                    return v
-                end
-            end,
-            { ... }
-        )
-    )
-end
-
-local mapping_modes = { 'i', 'c', 's' }
-
-cmp.setup({
-    enabled = true,
-    preselect = cmp.PreselectMode.None,
-    mapping = {
-        ['<C-l>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-s>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping(
-            function(fb)
-                if cmp.visible()
-                then
-                    cmp.confirm({ select = true })
-                else
-                    fb()
-                end
-            end,
-            mapping_modes
-        ),
-        ['<CR>'] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = false,
-        }),
-        ['<C-d>'] = cmp.mapping(
-            function(fb) if cmp.visible() then cmp.close() else fb() end end,
-            mapping_modes
-        ),
-        ['<C-n>'] = cmp.mapping(cmp_next, mapping_modes),
-        ['<C-e>'] = cmp.mapping(cmp_prev, mapping_modes),
-    },
-    snippet = {
-        expand = function(args)
-            luasnip.lsp_expand(args.body)
-            fix_mapping()
-        end,
-    },
-    completion = { keyword_length = 1, autocomplete = { 'TextChanged' } },
-    formatting = {
-        format = function(_, item)
-            if fn.mode() == 'c' then item.kind = nil end
-            -- item.menu = '[' .. entry.source.name .. ']'
-            return item
-        end,
-    },
-    matching = { disallow_partial_matching = false },
-    sorting = {
-        -- https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/config/compare.lua
-        comparators = {
-            cmp.config.compare.offset,
-            cmp.config.compare.exact,
-            cmp.config.compare.score,
-            cmp.config.compare.scope,
-            -- https://github.com/lukas-reineke/cmp-under-comparator
-            function(entry1, entry2)
-                local _, entry1_under = entry1.completion_item.label:find '^_+'
-                local _, entry2_under = entry2.completion_item.label:find '^_+'
-                entry1_under = entry1_under or 0
-                entry2_under = entry2_under or 0
-                if entry1_under > entry2_under then
-                    return false
-                elseif entry1_under < entry2_under then
-                    return true
-                end
-            end,
-            cmp.config.compare.kind,
-            cmp.config.compare.sort_text,
-            cmp.config.compare.locality,
-            cmp.config.compare.order,
-        },
-    },
-    sources = get_sources(
-        'copilot',
-        'nvim_lsp',
-        'nvim_lsp_signature_help',
-        'luasnip',
-        'treesitter',
-        'path',
-        'buffer'
-    ),
-    view = { entries = 'custom' },
-    window = {
-        completion = { border = 'single' },
-        documentation = { border = 'single' },
+-- XXX: wait for https://github.com/lvimuser/lsp-inlayhints.nvim/issues/17#issuecomment-1242142570
+--      also reenable hints for rust once it lands
+require('lsp-inlayhints').setup({
+    inlay_hints = {
+        parameter_hints = { prefix = '<- ' },
+        type_hints = { prefix = '' },
+        labels_separator = ' ',
     },
 })
 
-cmp.setup.cmdline(
-    ':', {
-        sources = get_sources(
-            'path', { name = 'cmdline', option = { ignore_cmds = {} } }
-        ),
-    }
-)
-
-cmp.setup.cmdline({ '/', '?' }, { sources = get_sources('buffer') })
-
 local cc = (tonumber(vim.o.cc) or 80) - 1
-local enable, disable = { enable = true }, { enable = false }
+local enable = { enable = true }
+local disable = { enable = false }
+
 local servers = {
     'clangd',
     'ltex',
     {
         'lua_ls',
         {
+            on_attach = function(client, bufnr)
+                client.server_capabilities.semanticTokensProvider = nil
+                vim.lsp.semantic_tokens.stop(bufnr, client.id)
+            end,
             settings = {
                 Lua = {
                     diagnostics = { globals = { 'vim' } },
@@ -177,8 +44,8 @@ local servers = {
                             auto_collapse_lines = 'true',
                         },
                     },
-                    hint = disable,
-                    -- hint = enable,
+                    -- hint = disable,
+                    hint = enable,
                     runtime = { version = 'LuaJIT', path = vim.o.path },
                     telemetry = disable,
                     workspace = { library = api.nvim_get_runtime_file('', true) },
@@ -219,6 +86,10 @@ local servers = {
     {
         'rust_analyzer',
         {
+            on_attach = function(client)
+                client.server_capabilities.inlayHintProvider = nil
+            end,
+            -- https://rust-analyzer.github.io/manual.html
             settings = {
                 ['rust-analyzer'] = {
                     checkOnSave = true,
@@ -240,12 +111,18 @@ local servers = {
                             'clippy::cargo',
                             '-A',
                             'clippy::cargo_common_metadata',
+                            '-A',
+                            'clippy::option-if-let-else'
                         },
                     },
                     cargo = { noDefaultFeatures = false },
                     completion = { privateEditable = enable },
                     hover = { actions = { references = enable, run = disable } },
                     imports = { prefer = { no = { std = true } } },
+                    inlayHints = {
+                        closureReturnTypeHints = enable,
+                        lifetimeElisionHints = enable,
+                    },
                     rustfmt = {
                         extraArgs = {
                             '--config',
@@ -263,31 +140,17 @@ local servers = {
     { 'typst_lsp', { settings = { exportPdf = 'never' } } },
 }
 
-api.nvim_create_augroup('nvim-lightbulb', {})
-
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-capabilities.offsetEncoding = { 'utf-16' }
-
 local defaults = {
-    capabilities = capabilities,
+    capabilities = vim.tbl_deep_extend('force',
+        require('cmp_nvim_lsp').default_capabilities(),
+        {
+            offsetEncoding = { 'utf-16' },
+            workspace = { didChangeWatchedFiles = { dynamicRegistration = false } },
+        }
+    ),
     on_attach = function(client, bufnr)
-        api.nvim_create_autocmd(
-            { 'CursorHold', 'CursorHoldI', 'CursorMoved', 'DiagnosticChanged' },
-            {
-                buffer = bufnr,
-                callback = require('nvim-lightbulb').update_lightbulb,
-                group = 'nvim-lightbulb',
-            }
-        )
         require("lsp-inlayhints").on_attach(client, bufnr)
 
-        -- print(vim.inspect(vim.tbl_keys(client)))
-
-        if client.name == 'lua_ls'
-        then
-            client.server_capabilities.semanticTokensProvider = nil
-            vim.lsp.semantic_tokens.stop(bufnr, client.id)
-        end
         -- TODO: this but better:
         -- if client.server_capabilities.documentHighlightProvider then
         --     vim.api.nvim_create_augroup("lsp_document_highlight",
@@ -318,94 +181,20 @@ for _, server in ipairs(servers) do
     then
         lspconfig[server].setup(defaults)
     else
-        lspconfig[server[1]].setup(
-            vim.tbl_deep_extend('force', defaults, server[2])
-        )
+        local name, conf = unpack(server)
+
+        local on_attach = conf.on_attach
+        if on_attach
+        then
+            conf.on_attach = function(...)
+                on_attach(...)
+                defaults.on_attach(...)
+            end
+        end
+
+        lspconfig[name].setup(vim.tbl_deep_extend('force', defaults, conf))
     end
 end
-
-local tab_size = function(params)
-    return params
-        and params.options
-        and params.options.tabSize
-        or vim.bo.shiftwidth
-end
-
-local null_ls = require('null-ls')
-null_ls.setup({
-    sources = {
-        null_ls.builtins.code_actions.gitsigns,
-        null_ls.builtins.code_actions.shellcheck,
-        null_ls.builtins.diagnostics.shellcheck.with({
-            extra_args = {
-                '--enable=all',
-                '--exclude=SC1071,SC2312,SC2148,SC3057',
-            },
-            extra_filetypes = { 'zsh' },
-        }),
-        null_ls.builtins.formatting.clang_format.with({
-            extra_args = {
-                '--style=file:'
-                .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
-            },
-        }),
-        null_ls.builtins.formatting.latexindent,
-        null_ls.builtins.formatting.prettier.with({
-            extra_args = function(params)
-                local args = {
-                    '--print-width',
-                    cc,
-                    '--tab-width',
-                    tab_size(
-                        params),
-                }
-
-                if fn.fnamemodify(params.bufname, ':e') == ''
-                then
-                    args = vim.list_extend(
-                        { '--parser', vim.bo[params.bufnr].filetype }, args
-                    )
-                end
-
-                return args
-            end,
-        }),
-        null_ls.builtins.formatting.shfmt.with({
-            extra_args = function(params)
-                return {
-                    '--indent',
-                    tab_size(params),
-                    '--binary-next-line',
-                    '--case-indent',
-                    '--language-dialect',
-                    'bash',
-                    '--space-redirects',
-                }
-            end,
-            extra_filetypes = { 'zsh' },
-        }),
-        null_ls.builtins.diagnostics.vint.with({
-            extra_args = { '--enable-neovim' },
-        }),
-        null_ls.builtins.formatting.taplo.with({
-            extra_args = function(params)
-                local opts = {}
-                for _, opt in ipairs({
-                    'allowed_blank_lines=1',
-                    'column_width=' .. cc,
-                    'indent_tables=true',
-                    'indent_entries=true',
-                    'indent_string=' .. string.rep(' ', tab_size(params)),
-                })
-                do
-                    table.insert(opts, '--option')
-                    table.insert(opts, opt)
-                end
-                return opts
-            end,
-        }),
-    },
-})
 
 local _format = vim.lsp.buf.format
 ---@diagnostic disable-next-line: duplicate-set-field

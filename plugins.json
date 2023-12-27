@@ -28,7 +28,6 @@
     { "repo": "folke/neodev.nvim", "opt": true },
     { "repo": "folke/trouble.nvim", "opt": true },
     { "repo": "hkupty/iron.nvim", "opt": true },
-    { "repo": "kosayoda/nvim-lightbulb", "update": false },
     { "repo": "lukas-reineke/indent-blankline.nvim", "branch": "v2.20.8" },
     { "repo": "luukvbaal/stabilize.nvim", "branch": "0.8" },
     { "repo": "mfussenegger/nvim-dap", "opt": true },
