@@ -10,7 +10,6 @@ vim.cmd.runtime('minimal/init.vim')
 
 for _, mod in ipairs({
     'plugins',
-    'completion',
     'keymap',
     'autocmd',
 }) do

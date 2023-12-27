@@ -5,9 +5,13 @@ local api = vim.api
 local Callbacks = {}
 local Modules = {}
 
-local load_cb = function(package)
-    return function()
-        M.load(package)
+M.load = function(package)
+    local setup = Callbacks[package]
+    if setup
+    then
+        vim.cmd.packadd(package)
+        setup()
+        Callbacks[package] = nil
     end
 end
 
@@ -28,28 +32,19 @@ M.register = function(package, opts)
     do
         api.nvim_create_autocmd(
             'CmdUndefined',
-            { pattern = cmd, callback = load_cb(package) }
+            { pattern = cmd, callback = function() M.load(package) end }
         )
     end
 
     for _, ft in ipairs(opts.filetypes or {})
     do
         api.nvim_create_autocmd(
-            'FileType', { pattern = ft, callback = load_cb(package) }
+            'FileType',
+            { pattern = ft, callback = function() M.load(package) end }
         )
     end
 
     for _, mod in ipairs(opts.modules or {}) do Modules[mod] = package end
-end
-
-M.load = function(package)
-    local setup = Callbacks[package]
-    if setup
-    then
-        vim.cmd.packadd(package)
-        setup()
-        Callbacks[package] = nil
-    end
 end
 
 M.require = function(mod)

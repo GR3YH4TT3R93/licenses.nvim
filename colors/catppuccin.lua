@@ -94,6 +94,9 @@ local highlights = {
     LspReferenceWrite = { bg = c.surface1 },
     LspSignatureActiveParameter = { fg = c.peach },
 
+    -- lsp-inlayhints.nvim
+    LspInlayHint = { bg = '#3b3f52', fg = c.overlay0 },
+
     -- markdown
     markdownHeadingDelimiter = { fg = c.peach, bold = true },
     markdownCode = { fg = c.flamingo },

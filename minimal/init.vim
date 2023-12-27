@@ -63,6 +63,7 @@ if &t_Co == 8
 elseif &t_Co > 16
     set termguicolors
 endif
+set textwidth=79
 set title
 set undofile
 set updatetime=500
