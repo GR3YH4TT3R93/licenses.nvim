@@ -62,10 +62,15 @@ local servers = {
                     plugins = {
                         black = { enabled = true, line_length = cc },
                         isort = { enabled = true },
-                        mypy = {
+                        pylsp_mypy = {
                             enabled = true,
                             live_mode = true,
                             report_progress = true,
+                            overrides = {
+                                '--python-executable=' .. fn.exepath("python"),
+                                '--ignore-missing-imports',
+                                true
+                            }
                         },
                         pylint = {
                             args = {
@@ -75,6 +80,18 @@ local servers = {
                                 '--include-naming-hint=True',
                                 '--max-line-length=' .. cc,
                                 '--reports=True',
+                                "--init-hook='" .. table.concat(
+                                    {
+                                        'import sys',
+                                        string.format(
+                                            'sys.path.append("%s")',
+                                            fn.stdpath('config')
+                                        ),
+                                        'import pylint_venv',
+                                        'pylint_venv.inithook(quiet=True)'
+                                    },
+                                    ';'
+                                ) .. "'"
                             },
                             enabled = true,
                         },
