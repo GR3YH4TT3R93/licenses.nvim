@@ -186,6 +186,38 @@ require('nvim-treesitter.configs').setup({
         additional_vim_regex_highlighting = false,
     },
     matchup = { enable = true },
+    textobjects = {
+        select = {
+            enable = true,
+            lookahead = true,
+            keymaps = {
+                at = '@function.outer',
+                ut = '@function.inner',
+                ad = '@class.outer',
+                ud = '@class.inner',
+            },
+        },
+        move = {
+            enable = true,
+            set_jumps = true,
+            goto_next_start = {
+                [']h'] = '@function.outer',
+                [']]'] = '@class.outer',
+            },
+            goto_next_end = {
+                [']H'] = '@function.outer',
+                [']['] = '@class.outer',
+            },
+            goto_previous_start = {
+                ['[h'] = '@function.outer',
+                ['[['] = '@class.outer',
+            },
+            goto_previous_end = {
+                ['[H'] = '@function.outer',
+                ['[]'] = '@class.outer',
+            },
+        },
+    },
 })
 
 -- nvim-treesitter-context
