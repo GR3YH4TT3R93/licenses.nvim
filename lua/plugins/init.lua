@@ -175,7 +175,7 @@ vim.treesitter.language.register('bash', 'sh')
 vim.treesitter.language.register('bash', 'oil')
 vim.treesitter.language.register('bash', 'zsh')
 
-local ts_disable = { 'vimdoc' }
+local ts_disable = { 'gitcommit', 'vimdoc' }
 ---@diagnostic disable-next-line: missing-fields
 require('nvim-treesitter.configs').setup({
     sync_install = false,
