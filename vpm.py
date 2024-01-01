@@ -118,6 +118,8 @@ def main(
 
     if not os.path.isdir(pack_path + "/.git"):
         git(["init"])
+        git(["config", "user.email", "you@example.com"])
+        git(["config", "user.name", "Your Name"])
 
     if action in {"clean", "sync"}:
         clean(plugins)
