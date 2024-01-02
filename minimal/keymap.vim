@@ -9,8 +9,7 @@ inoremap <C-n> <Nop>
 inoremap <C-w> <C-g>u<C-w>
 inoremap <CR> <Plug>delimitMateCR
 
-nnoremap <silent> <C-i>
-    \ :nohlsearch<C-r>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-l>
+nnoremap <C-i> <Cmd>nohlsearch<Bar>diffupdate<CR><C-l>
 nnoremap dr% <Plug>(matchup-cs%)
 nnoremap sr% <Plug>(matchup-ds%)
 nnoremap x% <Plug>(matchup-z%)
