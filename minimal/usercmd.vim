@@ -12,4 +12,4 @@ function! s:DiffSaved()
     wincmd h
 endfunction
 
-com! DiffSaved call s:DiffSaved()
+command! -bar DiffSaved call s:DiffSaved()
