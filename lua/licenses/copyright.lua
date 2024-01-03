@@ -76,20 +76,22 @@ M.update = function(bufnr, config)
     vim.validate({
         bufnr = { bufnr, 'number' },
         config = { config, 'table' },
-        copyright_holder = { config.copyright_holder, 'string' },
+        copyright_holder = { config.copyright_holder, { 'function', 'string' } },
     })
 
 
     local copyrights = M.get(bufnr)
     if not copyrights then return end
 
+    local name = util.get_val(config.copyright_holder)
+    local email = util.get_val(config.email)
+
     local cs = util.get_commentstring(bufnr)
     local year = os.date('%Y')
     local matched_spdx = false
     for _, cpy in ipairs(copyrights.spdx)
     do
-        if cpy.name == config.copyright_holder
-            and (not cpy.email or cpy.email == config.email)
+        if cpy.name == name and (not cpy.email or cpy.email == email)
         then
             matched_spdx = true
             if year ~= cpy.years[#cpy.years]
@@ -116,18 +118,16 @@ M.update = function(bufnr, config)
             bufnr,
             copyrights.spdx[1].lnum,
             cs:format(
-                util.format_spdx_copyright(
-                ---@diagnostic disable-next-line: param-type-mismatch
-                    os.date('%Y'), config.copyright_holder, config.email
-                )
+            ---@diagnostic disable-next-line: param-type-mismatch
+                util.format_spdx_copyright(os.date('%Y'), name, email)
             )
         )
     end
 
     for _, cpy in ipairs(copyrights.other)
     do
-        if cpy.name == config.copyright_holder
-            and (not cpy.email or cpy.email == config.email)
+        if cpy.name == name
+            and (not cpy.email or cpy.email == email)
             and year ~= cpy.years[#cpy.years]
         then
             local line = api.nvim_buf_get_lines(
