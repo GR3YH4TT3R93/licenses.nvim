@@ -57,6 +57,9 @@ local servers = {
     {
         'pylsp',
         {
+            on_attach = function(client)
+                client.server_capabilities.documentFormattingProvider = nil
+            end,
             settings = {
                 pylsp = {
                     plugins = {
@@ -69,8 +72,8 @@ local servers = {
                             overrides = {
                                 '--python-executable=' .. fn.exepath("python"),
                                 '--ignore-missing-imports',
-                                true
-                            }
+                                true,
+                            },
                         },
                         pylint = {
                             args = {
@@ -88,10 +91,10 @@ local servers = {
                                             fn.stdpath('config')
                                         ),
                                         'import pylint_venv',
-                                        'pylint_venv.inithook(quiet=True)'
+                                        'pylint_venv.inithook(quiet=True)',
                                     },
                                     ';'
-                                ) .. "'"
+                                ) .. "'",
                             },
                             enabled = true,
                         },
@@ -130,7 +133,7 @@ local servers = {
                             '-A',
                             'clippy::cargo_common_metadata',
                             '-A',
-                            'clippy::option-if-let-else'
+                            'clippy::option-if-let-else',
                         },
                     },
                     cargo = { noDefaultFeatures = false },

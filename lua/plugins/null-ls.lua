@@ -25,6 +25,9 @@ null_ls.setup({
                 .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
             },
         }),
+        null_ls.builtins.formatting.black.with({
+            extra_args = { '--line-length', cc },
+        }),
         null_ls.builtins.formatting.latexindent,
         null_ls.builtins.formatting.prettier.with({
             extra_args = function(params)
@@ -32,8 +35,7 @@ null_ls.setup({
                     '--print-width',
                     cc,
                     '--tab-width',
-                    tab_size(
-                        params),
+                    tab_size(params),
                 }
 
                 if vim.fn.fnamemodify(params.bufname, ':e') == ''
