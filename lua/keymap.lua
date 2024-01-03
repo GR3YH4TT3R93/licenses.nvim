@@ -54,6 +54,7 @@ for _, keymap in ipairs({
     },
     { '', '<A-e>', dot_repeat.mk_cmd('move .-2') },
     { '', '<A-n>', dot_repeat.mk_cmd('move .+1') },
+    { 'i', '<C-n>', require('cmp').complete },
     { 'n', '<Space>', lsp.hover },
     { 'v', '<A-e>', dot_repeat.mk_cmd('move \'<-2', { type = 'range' }) .. 'gv' },
     { 'v', '<A-n>', dot_repeat.mk_cmd('move \'>+1', { type = 'range' }) .. 'gv' },
