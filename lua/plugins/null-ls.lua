@@ -25,6 +25,7 @@ null_ls.setup({
                 .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
             },
         }),
+        null_ls.builtins.formatting.isort,
         null_ls.builtins.formatting.black.with({
             extra_args = { '--line-length', cc },
         }),
