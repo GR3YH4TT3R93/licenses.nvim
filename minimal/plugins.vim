@@ -9,8 +9,10 @@ let delimitMate_balance_matchpairs=1
 let delimitMate_nesting_quotes=['`']
 let delimitMate_expand_cr=1
 
-" showmarks.vim
+" pydoc.vim
+let pydoc_autoload=1
 
+" showmarks.vim
 let showmarks_autoload=1
 let showmarks_include = 
     \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.'\"`^<>[]{}()"

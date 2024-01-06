@@ -16,6 +16,7 @@ else
     let &backupdir=expand('~/.vim/backup')
 endif
 set colorcolumn=80
+set completeopt=menu,menuone,noselect,preview
 set cursorline
 set diffopt+=linematch:60,algorithm:minimal
 set display=lastline,truncate
@@ -68,7 +69,7 @@ set title
 set undofile
 set updatetime=500
 set viewoptions=cursor,folds
-set wrapmargin=8
+set wrapmargin=0
 set wildchar=<C-i>
 
 let no_man_maps=v:true
