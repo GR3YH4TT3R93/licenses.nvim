@@ -11,6 +11,7 @@
     "https://git.sr.ht/~reggie/dot_repeat.nvim",
     "https://git.sr.ht/~reggie/licenses.nvim",
     "https://git.sr.ht/~reggie/synctex.nvim",
+    "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
     "jose-elias-alvarez/null-ls.nvim",
     "kyazdani42/nvim-web-devicons",

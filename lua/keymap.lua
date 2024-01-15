@@ -1,46 +1,15 @@
 local wo = vim.wo
 local lsp = vim.lsp.buf
 
-local dot_repeat = require('dot_repeat')
+local dot_repeat = require('dot_repeat').mk_cmd
 
-local telescope = function(action, opts)
-    return function()
-        require('lazyload').require('telescope.builtin')[action](opts)
-    end
-end
-
-for _, keymap in ipairs({
-    -- each of <C-/> and <C-_> work in some terminals but not some others
-    { '', '<C-/>g', telescope('live_grep') },
-    { '', '<C-/>m', telescope('help_tags') },
-    { '', '<C-/>p', telescope('lsp_references') },
-    { '', '<C-/>r', telescope('lsp_document_symbols') },
-    { '', '<C-/>s', lsp.definition },
-    { '', '<C-/>t', telescope('find_files') },
-    { '', '<C-/>v', telescope('git_files') },
-    {
-        '',
-        '<C-/>z',
-        telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
-    },
-    { '', '<C-_>g', telescope('live_grep') },
-    { '', '<C-_>m', telescope('help_tags') },
-    { '', '<C-_>p', telescope('lsp_references') },
-    { '', '<C-_>r', telescope('lsp_document_symbols') },
-    { '', '<C-_>s', lsp.definition },
-    { '', '<C-_>t', telescope('find_files') },
-    { '', '<C-_>v', telescope('git_files') },
-    {
-        '',
-        '<C-_>z',
-        telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
-    },
+local keymaps = {
     { '', '<Tab>a', lsp.code_action },
     { '', '<Tab>m', lsp.hover },
     { '', '<Tab>p', lsp.rename },
     { '', '<Tab>t', lsp.format },
     { '', '<Leader>b', ':TroubleToggle<CR>' },
-    { '', '<Leader>d', dot_repeat.mk_cmd('Commentary', { type = 'range' }) },
+    { '', '<Leader>d', dot_repeat('Commentary', { type = 'range' }) },
     { '', '<Leader>t', lsp.format },
     {
         '',
@@ -52,13 +21,41 @@ for _, keymap in ipairs({
             wo.foldmethod = fm
         end,
     },
-    { '', '<A-e>', dot_repeat.mk_cmd('move .-2') },
-    { '', '<A-n>', dot_repeat.mk_cmd('move .+1') },
+    { '', '<A-e>', dot_repeat('move .-2') },
+    { '', '<A-n>', dot_repeat('move .+1') },
+    { '', ']i', vim.diagnostic.goto_next },
+    { '', '[i', vim.diagnostic.goto_prev },
     { 'i', '<C-n>', require('cmp').complete },
     { 'n', '<Space>', lsp.hover },
-    { 'v', '<A-e>', dot_repeat.mk_cmd('move \'<-2', { type = 'range' }) .. 'gv' },
-    { 'v', '<A-n>', dot_repeat.mk_cmd('move \'>+1', { type = 'range' }) .. 'gv' },
+    { 'v', '<A-e>', dot_repeat('move \'<-2', { type = 'range' }) .. 'gv' },
+    { 'v', '<A-n>', dot_repeat('move \'>+1', { type = 'range' }) .. 'gv' },
+}
+
+local telescope = function(action, opts)
+    return function()
+        require('lazyload').require('telescope.builtin')[action](opts)
+    end
+end
+
+-- each of <C-/> and <C-_> work in some terminals but not some others
+for _, finder in ipairs({
+    { 'g', telescope('live_grep') },
+    { 'm', telescope('help_tags') },
+    { 'p', lsp.references },
+    { 'r', lsp.document_symbol },
+    { 's', lsp.definition },
+    { 't', telescope('find_files') },
+    { 'v', telescope('git_files') },
+    {
+        'z',
+        telescope('buffers', { ignore_current_buffer = true, sort_mru = true }),
+    },
 }) do
+    table.insert(keymaps, { '', '<C-/>' .. finder[1], finder[2] })
+    table.insert(keymaps, { '', '<C-_>' .. finder[1], finder[2] })
+end
+
+for _, keymap in ipairs(keymaps) do
     local modes, lhs, rhs, opts = unpack(keymap)
     ---@diagnostic disable-next-line: cast-local-type
     modes = vim.fn.split(modes, '\\zs') --[[@as table]]
