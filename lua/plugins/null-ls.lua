@@ -63,6 +63,7 @@ null_ls.setup({
             end,
             extra_filetypes = { 'zsh' },
         }),
+        null_ls.builtins.formatting.typstfmt,
         null_ls.builtins.diagnostics.vint.with({
             extra_args = { '--enable-neovim' },
         }),
