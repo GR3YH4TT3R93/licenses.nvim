@@ -3,6 +3,8 @@ local fn = vim.fn
 local cmd = vim.cmd
 local lsp = vim.lsp
 
+require('lsp_lines').setup()
+
 -- XXX: wait for https://github.com/lvimuser/lsp-inlayhints.nvim/issues/17#issuecomment-1242142570
 --      also reenable hints for rust once it lands
 require('lsp-inlayhints').setup({
