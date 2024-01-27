@@ -1,0 +1,38 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    name: Update README
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare
+        env:
+          NVIM_TAG: stable
+        run: |
+          bash ./scripts/ci-install-ubuntu-latest.sh
+
+      - name: Check README
+        run: |
+          git config user.email 'actions@github'
+          git config user.name 'Github Actions'
+          nvim -l scripts/update-readme.lua || echo 'Needs update'
+          git add README.md
+          git commit -m 'Update README' || echo 'No commit necessary!'
+          git clean -xf
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Update README
+          title: Update README
+          branch: update-readme-pr
+          base: ${{ github.head_ref }}
+          draft: true
