@@ -1,0 +1,461 @@
+*licenses-nvim.txt*
+
+Insert and write license headers and/or files.
+
+                                                    *licenses.nvim* *LicensesNvim*
+
+  GETTING STARTED........................................|licenses-nvim-intro|
+  LICENSE FILES..................................|licenses-nvim-license-files|
+  USER COMMANDS..................................|licenses-nvim-user-commands|
+  :LicenseInsert..............................................|:LicenseInsert|
+  :LicenseFetch................................................|:LicenseFetch|
+  :LicenseUpdate..............................................|:LicenseUpdate|
+  :LicenseWrite................................................|:LicenseWrite|
+  LUA API..................................................|licenses-nvim-lua|
+  Config................................................|licenses-nvim.Config|
+  get_config........................................|licenses-nvim.get_config|
+  CpyInfo..............................................|licenses-nvim.CpyInfo|
+  get_copyright_info........................|licenses-nvim.get_copyright_info|
+  get_text............................................|licenses-nvim.get_text|
+  insert................................................|licenses-nvim.insert|
+  fetch..................................................|licenses-nvim.fetch|
+  update_copyright............................|licenses-nvim.update_copyright|
+  write_license..................................|licenses-nvim.write_license|
+  setup..................................................|licenses-nvim.setup|
+  TELESCOPE EXTENSION................................|licenses-nvim-telescope|
+  LUASNIP SNIPPETS.....................................|licenses-nvim-luasnip|
+
+==============================================================================
+GETTING STARTED                                            *licenses-nvim-intro*
+
+Licenses.nvim provides user commands to fetch, insert and write SPDX licenses.
+
+To get started add the code below to your init.lua file:
+>lua
+    require('licenses').setup({
+        copyright_holder = 'your name',
+        email = 'example@email.com',
+        license = 'MIT'
+    })
+<
+Setup takes a single table as an argument, which is used to override the
+default configuration. The most important keys are the ones shown above, for
+all possible options see |licenses-nvim.Config|.
+
+Running setup is not necessary to set the configuration and can be set directly.
+The following is the default configuration and could be set like this:
+>lua
+    require('licenses').config = {
+        fallback_to_full_text = function(id)
+            return vim.tbl_contains({ 'BSD-2-Clause', 'MIT', 'Unlicense' }, id)
+        end,
+        use_license_header = true,
+        wrap_width = function() return vim.bo.textwidth end,
+        vars = {},
+        write_license_to_file = false,
+    }
+<
+This can be useful if you want to overwrite all the defaults or you don't want
+setup to create user commands and only wish to use the underlying lua api.
+
+The last option for configuring licenses.nvim is via global or buffer variables,
+g:licenses_nvim_config and b:licenses_nvim_config respectively.
+
+Additionally, for convenience, the following keys have their own variables:
+{copyright_holder}, {email} and {license}. The names of these variables are
+'licenses_nvim_{var}'. For example to set different license and holder for just
+one buffer you can do:
+>vim
+    let b:licenses_nvim_license = "BSD-2-Clause"
+    let b:licenses_nvim_copyright_holder = "Joe"
+<
+After we are done with our setup we can use |:LicenseInsert| to add our chosen
+license to the currently open buffer. There are a few common licenses included,
+but you can use |:LicenseFetch| to download additional ones.
+
+See: ~
+    • |licenses-nvim-license-files| for instructions on adding your own licenses
+    • |licenses-nvim-user-commands| for all available commands and their usage
+    • |licenses-nvim-lua| for lua api
+
+==============================================================================
+LICENSE FILES                                      *licenses-nvim-license-files*
+
+This plugin looks for license files in 'runtimepath' under directory named
+licenses. This directory contains two subdirectories: text and header. Both
+use the same syntax, but text contains full license text and header contains
+license's standard file header (if any).
+
+To add your own license file you will have to create the licenses directory
+anywhere in 'runtimepath', e.g. ~/.config/nvim/licenses.
+
+Let's say we want to add a license called MYLICENSE. It will be located at
+~/.config/nvim/licenses/text/MYLICENSE.txt. This file should contain the entire
+text of the license so we would just go ahead and paste it.
+
+This license might contain a copyright notice, if we take a look at MIT license
+it contains "Copyright (c) <year> <copyright holders>". We would want to
+replace this part with the following:
+>
+    <<var;name="copyright";original="Copyright (c) <year> <copyright holders>";>>
+<
+For every variable like this we check {vars} in |licenses-nvim.Config| for one
+with the same name and substitute it with either the found value or original.
+
+You may add any additional variables of your choosing and as long they match
+this lua pattern `<<var;name="(.-)";original="(.-)";.->>` (see |luaref-patterns|)
+they should be interpreted and replaced.
+
+This is the same syntax that SPDX uses in its json license files, which is
+where we fetch license texts from. For an example see licenses/text/MIT.txt
+in this plugin's directory or the standardLicenseTemplate field in
+https://spdx.org/licenses/MIT.json.
+
+==============================================================================
+USER COMMANDS                                      *licenses-nvim-user-commands*
+
+Running |licenses-nvim.setup| will create the following user commands. Their
+behavior can be modified with |licenses-nvim.Config|.
+
+------------------------------------------------------------------------------
+:LicenseInsert [{id}]                                           *:LicenseInsert*
+
+Insert license matching the {id} on top of the active buffer. If no {id} was
+supplied, use the default license from |licenses-nvim.Config|.
+
+A simple check will be performed before inserting to see if the file already
+contains a copyright notice, if it does then nothing is inserted and error is
+shown. This behavior can be overriden with !, i.e. `:LicenseInsert!`.
+
+See: ~
+    • |licenses-nvim.insert| for the underlying lua function
+
+------------------------------------------------------------------------------
+:LicenseFetch {id}                                               *:LicenseFetch*
+
+Fetch license text and header from https://spdx.org/licenses/{id}.json and save
+them to `stdpath("cache")`.
+
+NOTE: Depends on the `curl` command.
+
+See: ~
+    • |licenses-nvim.fetch| for the underlying lua function
+
+------------------------------------------------------------------------------
+:LicenseUpdate                                                  *:LicenseUpdate*
+
+Update year of existing copyright notices.
+
+See: ~
+    • |licenses-nvim.update_copyright| for more details
+
+------------------------------------------------------------------------------
+:LicenseWrite {path} [{id}]                                      *:LicenseWrite*
+
+Write text of a license with {id} to {path}. If no {id} was specified, then
+uses the default one from |licenses-nvim.Config|.
+
+See: ~
+    • |licenses-nvim.write_license| for the underlying lua function
+
+==============================================================================
+LUA API                                                      *licenses-nvim-lua*
+
+Aside from above mentioned user commads, licenses.nvim exposes several Lua
+functions.
+
+All examples in this section assume, that `local licenses = require('licenses')`
+is true.
+
+------------------------------------------------------------------------------
+Config                                                    *licenses-nvim.Config*
+
+Configuration, that can be passed to |licenses-nvim.setup|, accessed directly,
+or set with g:licenses_nvim_config or b:licenses_nvim_config. Global and
+buffer variables always take precedence over config set in lua.
+
+Additionally {copyright_holder}, {email} and {license} can also
+be set via variables, the names of these variables are 'licenses_nvim_{var}',
+e.g. 'licenses_nvim_copyright_holder'.
+
+NOTE: These take precedence over the config. Even if b:licenses_nvim_config
+is set, g:licenses_nvim_license would be used instead of
+b:licenses_nvim_config.license.
+
+`FnBool` is a value, that can be either a boolean or a function, that takes id
+of a license and returns a boolean. `FnString` is the same, but returns a string.
+For example, the default `fallback_to_full_text` is:
+>lua
+    function(id)
+        return vim.tbl_contains({ 'BSD-2-Clause', 'MIT', 'Unlicense' }, id)
+    end
+<
+`LicenseVars` is a dictionary of license variables. To see how these variables
+are used check out |licenses-nvim-license-files|.
+
+The dictionary's keys are variable names and their values can either be a string
+or a function that takes two parameters: id of the license and original text of
+the variable so you can format the variable differently based on some custom
+logic.
+
+The values of this table should match the following signature:
+>
+    string | fun(id: string, original: string): string
+<
+Although there are no variables defined by default, |licenses-nvim.get_config|
+will add the copyright variable if there already isn't one. A simplified
+example of this variable would be:
+>lua
+    function()
+        return os.date('%Y') .. ' my name email@example.com'
+    end
+<
+Sometimes it is desirable to skip certain lines like shebangs on top of files
+and insert the license below them. The field {skip_lines} can be supplied with
+patterns (see |luaref-patterns|) to match against lines and |:LicenseInsert| will
+place license above the first one that does NOT match. For example, to skip
+shebangs you would:
+>lua
+    licenses.setup({
+        -- rest of the config
+        skip_lines = { '^#!' }
+    })
+<
+Fields: ~
+    • {copyright_holder} `(FnString)` Name of copyright holder (nil)
+    • {email} `(FnString)` Copyright holder's email (nil)
+    • {fallback_to_full_text} `(FnBool)`
+        Insert full text when there is no header
+        (evaluates to true if id == 'BSD-2-Clause', 'MIT' or 'Unlicense')
+    • {license} `(string | fun(): string)` Default license id (nil)
+    • {remember_previous_id} `(FnBool)`
+        If true |licenses-nvim.insert| will set b:licenses_nvim_license to
+        {config.license} making it the default for specified buffer (nil)
+    • {skip_lines} `(string[])`
+        List of patterns to skip if at the top of buffer (nil)
+    • {use_license_header} `(FnBool)`
+        Insert license header, only inserts SPDX tags if false (true)
+    • {vars} `(LicenseVars)` Replacements for license variables ({})
+    • {wrap_width} `(FnInt)` Wrap longer lines, 0 to disable ('textwidth')
+    • {write_license_to_file} `(FnBool)`
+        After inserting a header write specified license to
+        ./LICENSES, see: https://reuse.software/spec/#license-files (false)
+
+------------------------------------------------------------------------------
+get_config({bufnr}, {overrides})                      *licenses-nvim.get_config*
+
+Get configuration for specified {bufnr}. Looks through default config,
+global and buffer variables, and {overrides} to get the final config. If
+{bufnr} is nil, then buffer variables are ignored.
+
+To get a configuration, that has all the default values but a different
+license id we could do:
+>lua
+    licenses.get_config(vim.api.nvim_get_current_buf(), { license = 'MIT' })
+<
+Parameters: ~
+    • {bufnr} `(optional)` `(integer)` Buffer handle
+    • {overrides} `(optional)` `(Config)` Optional overrides
+
+Return: ~
+    `(Config)`
+
+------------------------------------------------------------------------------
+CpyInfo                                                  *licenses-nvim.CpyInfo*
+
+Table structure returned by |licenses-nvim.get_copyright_info|.
+
+Fields: ~
+    • {name} `(string)` Name of copyright holder
+    • {email} `(string)` Holder's email
+    • {years} `(string[])`
+        Array with one or two years in case copyright has years separated with
+        dash, e.g. 2020-2023 turns into `{ '2020', '2023' }`
+    • {lnum} `(integer)` Line number where notice is located
+
+------------------------------------------------------------------------------
+                                              *licenses-nvim.get_copyright_info*
+get_copyright_info({bufnr}, {l_start}, {l_end})
+
+Primitive function to get copyright information.
+
+NOTE: this is mostly used to check if file already contains a copyright notice
+to avoid inserting a second one, for more reliable license/copyright detection
+see: https://wiki.debian.org/CopyrightReviewTools.
+
+Looks for SPDX tags (see: https://spdx.github.io/spdx-spec/v2.3/file-tags)
+and also commented lines starting with "Copyright". Only looks at lines between
+{l_start} and {l_end}, by default 0 - 100, to avoid checking the entire buffer.
+
+Returns nil if no info found, otherwise returns a table containing two arrays
+with copyright information. Array named {spdx} contains copyrights defined with
+SPDX tags and {other} contains all other copyrights.
+
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle (0)
+    • {l_start} `(optional)` `(integer)` First line where to look (0)
+    • {l_end} `(optional)` `(integer)` Last line ({l_start} + 100)
+
+Return: ~
+    `({ other: CpyInfo[], spdx: CpyInfo[] } | nil)`
+
+See: ~
+    • |licenses-nvim.CpyInfo| for the copyright's structure
+
+------------------------------------------------------------------------------
+get_text({path}, {cs}, {vars}, {wrap_width})            *licenses-nvim.get_text*
+
+Get text from license file at {path} and replace variables with {vars}.
+Optionally pass {cs} to format every line with, see 'commentstring'.
+
+Example:~
+>lua
+    licenses.get_text('MIT.txt', '# %s', { software = 'example' })
+<
+Parameters: ~
+    • {path} `(string)` Path to license file
+    • {cs} `(optional)` `(string)` Commentstring, if any
+    • {vars} `(optional)` `(LicenseVars)` Replacements for license variables
+    • {wrap_width} `(optional)` `(integer)` Wrap lines longer than this
+
+Return: ~
+    `(table)` License text as array of lines
+
+------------------------------------------------------------------------------
+insert({bufnr}, {lnum}, {config})                         *licenses-nvim.insert*
+
+Insert a license header on {lnum} of {bufnr}.
+
+Example:
+>lua
+    local bufnr = vim.api.nvim_get_current_buf()
+    licenses.insert(bufnr, 0, licenses.get_config(bufnr))
+<
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle
+    • {lnum} `(integer)` Line number, zero-indexed
+    • {config} `(Config)` Configuration, NOTE: license key is required
+
+Return: ~
+    `(nil | string)` returns nil on success or string with error
+
+See: ~
+    • |licenses-nvim.get_config|
+
+------------------------------------------------------------------------------
+fetch({id}, {callback})                                    *licenses-nvim.fetch*
+
+Fetch license text and header from https://spdx.org/licenses/{id}.json and save
+them to `stdpath("cache")`.
+
+NOTE: Depends on the `curl` command.
+
+Parameters: ~
+    • {id} `(string)` SPDX License Identifier
+    • {callback} `(optional)` `(fun(err: string?))`
+        Callback that takes err message on failure or nil on success
+
+------------------------------------------------------------------------------
+update_copyright({bufnr}, {config})             *licenses-nvim.update_copyright*
+
+Use |licenses-nvim.get_copyright_info| to check for copyrights and update them
+
+If a copyright notice with the same name and email as specified in config is
+found then add current year if it isn't already the case, for example if 2020
+would become 2020-{current_year}, 2020-2022 would also change the same way.
+
+If the copyright notice is using SPDX tags, but it has different name a new
+one is added above, e.g.:
+
+    `SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>`
+
+would update to:
+>
+    SPDX-FileCopyrightText: 2023 New Name contact@new_name.com
+    SPDX-FileCopyrightText: 2022 Joe <joe@gmail.com>
+<
+Parameters: ~
+    • {bufnr} `(integer)` Buffer handle
+    • {config} `(Config)` Configuration, NOTE: copyright_holder key is required
+
+------------------------------------------------------------------------------
+write_license({path}, {config})                    *licenses-nvim.write_license*
+
+Write text of license with {id} to a file at {path}. If the file already exists
+it will get overwritten. Can be optionally supplied with config. If omitted
+then resulting text should equal the original.
+
+Example:
+>lua
+    licenses.write_license(
+        './LICENSE.txt',
+        licenses.get_config(vim.api.nvim_get_current_buf())
+    )
+<
+Parameters: ~
+    • {path} `(string)` Relative path to output file
+    • {config} `(Config)` Configuration, NOTE: license key is required
+
+Return: ~
+    `(nil | string)` returns nil on success or string with error
+
+See: ~
+    • |licenses-nvim.get_config|
+
+------------------------------------------------------------------------------
+setup({overrides})                                         *licenses-nvim.setup*
+
+Setup user commands and apply {overrides} to the configuration.
+
+Parameters: ~
+    • {overrides} `(optional)` `(Config)` Configuration to override the defaults
+
+See: ~
+    • |licenses-nvim-user-commands| for commands that get created
+    • |licenses-nvim.Config| for {overrides} syntax
+    • |licenses-nvim-intro| for example usage and how to get started
+
+==============================================================================
+TELESCOPE EXTENSION                                    *licenses-nvim-telescope*
+
+licenses.nvim integrates with https://github.com/nvim-telescope/telescope.nvim.
+
+If you have telescope you can load the extension using the following snippet:
+>lua
+    require('telescope').load_extension('licenses-nvim')
+<
+The extension provides these actions:
+    • {insert} Use telescope to pick license and then insert it
+    • {pick} Pick license and set it as default for current buffer
+
+You can then use `:Telescope licenses-nvim [ACTION]`, if ACTION is omitted then
+insert is used. The default action can be changed in |telescope.setup()|.
+>lua
+    -- rest of the configuration...
+    extensions = {
+        -- other extensions...
+        ['licenses-nvim'] = { default_action = 'pick' }
+    }
+<
+See: ~
+    • |telescope.load_extension()|
+    • |telescope.setup()|
+
+==============================================================================
+LUASNIP SNIPPETS                                         *licenses-nvim-luasnip*
+
+licenses.nvim provides a couple of snippets for
+https://github.com/L3MON4D3/LuaSnip.
+
+These snippets are triggered with:
+    • {license} Inserts license header on current line
+    • {SPDX} inserts SPDX copyright and license tags
+
+If you have LuaSnip installed you can enable them with:
+>lua
+    luasnip.loaders.from_lua').load()
+<
+See: ~
+    • |luasnip-loaders-lua| for more options
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
