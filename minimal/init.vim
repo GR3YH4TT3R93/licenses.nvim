@@ -18,7 +18,9 @@ endif
 set colorcolumn=80
 set completeopt=menu,menuone,noselect,preview
 set cursorline
-set diffopt+=linematch:60,algorithm:minimal
+if has('nvim')
+    set diffopt+=linematch:60,algorithm:minimal
+endif
 set display=lastline,truncate
 set expandtab
 if has('nvim-0.9')
