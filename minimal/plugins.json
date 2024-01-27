@@ -6,5 +6,6 @@
     "https://git.sr.ht/~reggie/pydoc.vim",
     "https://git.sr.ht/~reggie/showmarks.vim",
     "tpope/vim-commentary",
-    "tpope/vim-eunuch"
+    "tpope/vim-eunuch",
+    { "repo": "moll/vim-bbye", "update": false }
 ]
