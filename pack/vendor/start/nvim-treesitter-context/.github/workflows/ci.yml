@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        neovim_branch: ['v0.9.5']
+    runs-on: ubuntu-latest
+    env:
+      NEOVIM_BRANCH: ${{ matrix.neovim_branch }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup build dependencies
+        run: |
+          sudo apt-get update &&
+          sudo apt-get install -y \
+            cmake \
+            g++ \
+            gettext \
+            libtool-bin \
+            lua-bitop \
+            ninja-build \
+            unzip
+
+      - name: Cache neovim
+        uses: actions/cache@v3
+        with:
+          path: neovim-${{env.NEOVIM_BRANCH}}
+          key: build-${{env.NEOVIM_BRANCH}}
+
+      - name: Build Neovim
+        run: make neovim NEOVIM_BRANCH=$NEOVIM_BRANCH
+
+      - name: Run Test
+        run: make test NEOVIM_BRANCH=$NEOVIM_BRANCH
