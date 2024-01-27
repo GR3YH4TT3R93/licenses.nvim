@@ -22,7 +22,9 @@ null_ls.setup({
         null_ls.builtins.formatting.clang_format.with({
             extra_args = {
                 '--style=file:'
-                .. vim.api.nvim_get_runtime_file('clang-format', false)[1],
+                .. vim.api.nvim_get_runtime_file(
+                    'lspconfig/clang-format', false
+                )[1],
             },
         }),
         null_ls.builtins.formatting.isort,

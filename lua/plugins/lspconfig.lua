@@ -89,7 +89,7 @@ local servers = {
                                     {
                                         'import sys',
                                         string.format(
-                                            'sys.path.append("%s")',
+                                            'sys.path.append("%s/lspconfig")',
                                             fn.stdpath('config')
                                         ),
                                         'import pylint_venv',
