@@ -32,10 +32,22 @@ Added
    - `cast_expression`
 - Missing patterns for Lua:
    - `field`
+- Missing patterns for Luadoc:
+   - `indexed_field`
+   - `tuple_type`
 - Missing patterns for Python:
+   - `import_from_statement`
    - `tuple_pattern`
 - Missing patterns for Rust:
    - `array_type`
+- Missing patterns for Starlark:
+   - `tuple_pattern`
+
+Fixed
+=====
+
+- Default configuration settings override custom settings if the configuration
+  value was used before setting the custom value
 
 
 [0.3.0] 2023-12-24
