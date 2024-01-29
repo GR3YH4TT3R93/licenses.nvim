@@ -229,6 +229,33 @@ require('treesitter-context').setup({
     min_window_height = 0,
 })
 
+-- oil.nvim
+require('oil').setup({
+    default_file_explorer = true,
+    cleanup_delay_ms = false,
+    keymaps = {
+        ['g?'] = 'actions.show_help',
+        ['<CR>'] = 'actions.select',
+        ['<C-r>'] = 'actions.select_vsplit',
+        ['<C-m>'] = 'actions.select_split',
+        ['<C-b>'] = 'actions.select_tab',
+        ['<C-;>'] = 'actions.preview',
+        ['<C-d>'] = 'actions.close',
+        ['<C-i>'] = 'actions.refresh',
+        ['-'] = 'actions.parent',
+        ['_'] = 'actions.open_cwd',
+        ['`'] = 'actions.cd',
+        ['~'] = 'actions.tcd',
+        ['gr'] = 'actions.change_sort',
+        ['gc'] = 'actions.open_external',
+        ['g.'] = 'actions.toggle_hidden',
+    },
+    use_default_keymaps = false,
+    view_options = {
+        show_hidden = true
+    }
+})
+
 -- rainbow-delimiters.nvim
 vim.g.rainbow_delimiters = {
     strategy = { [''] = require('rainbow-delimiters').strategy['global'] },

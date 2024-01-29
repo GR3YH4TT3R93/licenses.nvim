@@ -145,7 +145,14 @@ def main() -> int:
     ):
         eprint("\nAll plugins are up to date, nothing to do")
     else:
-        eprint(f"\nPlugins updated, merge {update_branch} to apply changes")
+        eprint("\nTag before merge in case something goes wrong:\n")
+        git(["show", "--oneline"])
+        eprint("\nPlugins updated, merging to apply changes")
+        git(["merge", update_branch])
+
+    nvim_args = ["nvim", "--headless", "+helptags ALL", "+TSUpdateSync", "+q"]
+    eprint("\nRunning " + " ".join(nvim_args))
+    subprocess.run(nvim_args, check=False)
 
     return 0
 
