@@ -26,6 +26,7 @@
     "rafamadriz/friendly-snippets",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
+    "stevearc/oil.nvim",
     "zbirenbaum/copilot-cmp",
     { "repo": "folke/neodev.nvim", "opt": true },
     { "repo": "folke/trouble.nvim", "opt": true },

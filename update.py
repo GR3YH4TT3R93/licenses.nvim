@@ -132,7 +132,7 @@ def main() -> int:
     if not os.path.exists("pack/vendor_minimal"):
         os.symlink("../minimal/pack/vendor", "pack/vendor_minimal")
         git(["add", "pack/vendor_minimal"])
-        git(["commit", "--no-gpg-sign", "-m", "chore: add symlink to minimal"])
+        git(["commit", "-m", "chore: add symlink to minimal"])
 
     eprint("switching back to " + base)
     git(["switch", base])
