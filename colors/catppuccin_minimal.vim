@@ -1,38 +1,72 @@
-let s:rosewater='#f2d5cf'
-let s:flamingo='#eebebe'
-let s:pink='#f4b8e4'
-let s:mauve='#ca9ee6'
-let s:red='#e78284'
-let s:maroon='#ea999c'
-let s:peach='#ef9f76'
-let s:yellow='#e5c890'
-let s:green='#a6d189'
-let s:teal='#81c8be'
-let s:sky='#99d1db'
-let s:sapphire='#85c1dc'
-let s:blue='#8caaee'
-let s:lavender='#babbf1'
+let s:rosewater = '#f2d5cf'
+let s:flamingo = '#eebebe'
+let s:pink = '#f4b8e4'
+let s:mauve = '#ca9ee6'
+let s:red = '#e78284'
+let s:maroon = '#ea999c'
+let s:peach = '#ef9f76'
+let s:yellow = '#e5c890'
+let s:green = '#a6d189'
+let s:teal = '#81c8be'
+let s:sky = '#99d1db'
+let s:sapphire = '#85c1dc'
+let s:blue = '#8caaee'
+let s:lavender = '#babbf1'
 
-let s:text='#c6d0f5'
-let s:subtext1='#b5bfe2'
-let s:subtext0='#a5adce'
-let s:overlay2='#949cbb'
-let s:overlay1='#838ba7'
-let s:overlay0='#737994'
-let s:surface2='#626880'
-let s:surface1='#51576d'
-let s:surface0='#414559'
+let s:text = '#c6d0f5'
+let s:subtext1 = '#b5bfe2'
+let s:subtext0 = '#a5adce'
+let s:overlay2 = '#949cbb'
+let s:overlay1 = '#838ba7'
+let s:overlay0 = '#737994'
+let s:surface2 = '#626880'
+let s:surface1 = '#51576d'
+let s:surface0 = '#414559'
 
-let s:base='#303446'
-let s:mantle='#292c3c'
-let s:crust='#232634'
+let s:base = '#303446'
+let s:mantle = '#292c3c'
+let s:crust = '#232634'
 
-let s:none='NONE'
+let s:none = 'NONE'
 
 let s:bold = 'bold,'
 let s:italic = 'italic,'
 let s:undercurl = 'undercurl,'
 let s:underline = 'underline,'
+
+let g:colors = {
+    \'rosewater': s:rosewater,
+    \'flamingo': s:flamingo,
+    \'pink': s:pink,
+    \'mauve': s:mauve,
+    \'red': s:red,
+    \'maroon': s:maroon,
+    \'peach': s:peach,
+    \'yellow': s:yellow,
+    \'green': s:green,
+    \'teal': s:teal,
+    \'sky': s:sky,
+    \'sapphire': s:sapphire,
+    \'blue': s:blue,
+    \'lavender': s:lavender,
+    \'text': s:text,
+    \'subtext1': s:subtext1,
+    \'subtext0': s:subtext0,
+    \'overlay2': s:overlay2,
+    \'overlay1': s:overlay1,
+    \'overlay0': s:overlay0,
+    \'surface2': s:surface2,
+    \'surface1': s:surface1,
+    \'surface0': s:surface0,
+    \'base': s:base,
+    \'mantle': s:mantle,
+    \'crust': s:crust,
+    \'none': s:none,
+    \'bold': s:bold,
+    \'italic': s:italic,
+    \'undercurl': s:undercurl,
+    \'underline': s:underline,
+\}
 
 hi clear
 if exists('syntax_on')

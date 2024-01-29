@@ -1,7 +1,7 @@
-local c = require('colorscheme')
-
 vim.cmd.runtime('colors/catppuccin_minimal.vim')
 vim.g.colors_name = 'catppuccin'
+
+local c = vim.g.colors
 
 local highlights = {
     -- nvim-cmp
