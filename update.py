@@ -38,13 +38,16 @@ def update(prefix):
     prefix = prefix + "pack/vendor"
     os.makedirs(prefix, mode=0o700, exist_ok=True)
 
-    for path in ["start", "opt"]:
+    for subpath in ["start", "opt"]:
+        path = prefix + "/" + subpath
         if not os.path.isdir(path):
             continue
 
         for name in os.listdir(path):
-            name = path + "/" + name
+            name = subpath + "/" + name
+
             if not name in map(lambda p: p["name"], plugins):
+                name = prefix + "/" + name
                 eprint("removing " + name)
                 git(["rm", "-rf", name])
                 git(["add", "-u", name])
