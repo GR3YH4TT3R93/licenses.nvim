@@ -1,4 +1,4 @@
-local colors = require('colorscheme')
+local colors = vim.g.colors
 local fn = vim.fn
 local lsp = require('feline.providers.lsp')
 
