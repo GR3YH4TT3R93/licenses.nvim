@@ -34,7 +34,7 @@ let s:italic = 'italic,'
 let s:undercurl = 'undercurl,'
 let s:underline = 'underline,'
 
-let g:colors = {
+let colors = {
     \'rosewater': s:rosewater,
     \'flamingo': s:flamingo,
     \'pink': s:pink,
@@ -61,11 +61,6 @@ let g:colors = {
     \'base': s:base,
     \'mantle': s:mantle,
     \'crust': s:crust,
-    \'none': s:none,
-    \'bold': s:bold,
-    \'italic': s:italic,
-    \'undercurl': s:undercurl,
-    \'underline': s:underline,
 \}
 
 hi clear

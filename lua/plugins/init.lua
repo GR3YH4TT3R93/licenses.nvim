@@ -43,7 +43,7 @@ require('colorizer').setup()
 
 -- indent-blankline.nvim
 require('indent_blankline').setup({
-    char = '|',
+    -- char = '|',
     char_blankline = '',
     show_current_context = true,
     use_treesitter = true,
