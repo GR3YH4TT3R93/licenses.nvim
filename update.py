@@ -150,6 +150,9 @@ def main() -> int:
         eprint("\nPlugins updated, merging to apply changes")
         git(["merge", update_branch])
 
+    eprint(f"\nDeleting {update_branch} branch")
+    git(["branch", "-D", update_branch])
+
     nvim_args = ["nvim", "--headless", "+helptags ALL", "+TSUpdateSync", "+q"]
     eprint("\nRunning " + " ".join(nvim_args))
     subprocess.run(nvim_args, check=False)
