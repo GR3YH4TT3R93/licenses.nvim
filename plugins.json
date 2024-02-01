@@ -1,5 +1,6 @@
 [
     "L3MON4D3/LuaSnip",
+    "RaafatTurki/hex.nvim",
     "freddiehaddad/feline.nvim",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-cmdline",
@@ -13,7 +14,6 @@
     "https://git.sr.ht/~reggie/synctex.nvim",
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
-    "nvimtools/none-ls.nvim",
     "kyazdani42/nvim-web-devicons",
     "lewis6991/gitsigns.nvim",
     "lvimuser/lsp-inlayhints.nvim",
@@ -23,6 +23,7 @@
     "nvim-treesitter/nvim-treesitter",
     "nvim-treesitter/nvim-treesitter-context",
     "nvim-treesitter/nvim-treesitter-textobjects",
+    "nvimtools/none-ls.nvim",
     "rafamadriz/friendly-snippets",
     "ray-x/cmp-treesitter",
     "saadparwaiz1/cmp_luasnip",
