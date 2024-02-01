@@ -38,6 +38,10 @@ if fn.executable('git') == 1 then
     )
 end
 
+if fn.executable('xxd') == 1 then
+    require('hex').setup()
+end
+
 -- nvim-colorizer
 require('colorizer').setup()
 
