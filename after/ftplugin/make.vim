@@ -1,1 +1,2 @@
 set noexpandtab
+silent! IndentBlankLineDisable
