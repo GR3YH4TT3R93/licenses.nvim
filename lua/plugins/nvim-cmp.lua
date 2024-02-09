@@ -82,6 +82,10 @@ cmp.setup({
         ),
         ['<C-n>'] = cmp.mapping(cmp_next, mapping_modes),
         ['<C-e>'] = cmp.mapping(cmp_prev, mapping_modes),
+        -- check https://github.com/hrsh7th/cmp-path/issues/61
+        ['<C-c><C-t>'] = cmp.mapping.complete({
+            config = { sources = get_sources('path') },
+        }),
     },
     snippet = {
         expand = function(args)

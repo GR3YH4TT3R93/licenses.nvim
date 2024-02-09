@@ -206,18 +206,22 @@ require('nvim-treesitter.configs').setup({
             set_jumps = true,
             goto_next_start = {
                 [']h'] = '@function.outer',
-                [']]'] = '@class.outer',
+                [']{'] = '@block.outer',
+                [']['] = '@class.outer',
             },
             goto_next_end = {
                 [']H'] = '@function.outer',
-                [']['] = '@class.outer',
+                [']}'] = '@block.outer',
+                [']]'] = '@class.outer',
             },
             goto_previous_start = {
                 ['[h'] = '@function.outer',
+                ['[{'] = '@block.outer',
                 ['[['] = '@class.outer',
             },
             goto_previous_end = {
                 ['[H'] = '@function.outer',
+                ['[}'] = '@block.outer',
                 ['[]'] = '@class.outer',
             },
         },
