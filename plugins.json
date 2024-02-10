@@ -29,7 +29,6 @@
     "saadparwaiz1/cmp_luasnip",
     "stevearc/oil.nvim",
     "zbirenbaum/copilot-cmp",
-    { "repo": "folke/neodev.nvim", "opt": true },
     { "repo": "folke/trouble.nvim", "opt": true },
     { "repo": "hkupty/iron.nvim", "opt": true },
     { "repo": "lukas-reineke/indent-blankline.nvim", "branch": "v2.20.8" },
