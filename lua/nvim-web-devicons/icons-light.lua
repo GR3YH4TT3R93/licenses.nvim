@@ -389,6 +389,12 @@ local icons_by_filename = {
     cterm_color = "22",
     name = "BazelWorkspace",
   },
+  ["build.zig.zon"] = {
+    icon = "",
+    color = "#7b4d0e",
+    cterm_color = "94",
+    name = "ZigObjectNotation",
+  },
 }
 
 local icons_by_file_extension = {
@@ -1039,6 +1045,12 @@ local icons_by_file_extension = {
     color = "#397981",
     cterm_color = "30",
     name = "arduino",
+  },
+  ["ipynb"] = {
+    icon = "",
+    color = "#366b8a",
+    cterm_color = "24",
+    name = "Notebook",
   },
   ["java"] = {
     icon = "",
