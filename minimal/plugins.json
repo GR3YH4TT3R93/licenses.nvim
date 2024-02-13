@@ -5,6 +5,7 @@
     "https://git.sr.ht/~reggie/cursorword.vim",
     "https://git.sr.ht/~reggie/pydoc.vim",
     "https://git.sr.ht/~reggie/showmarks.vim",
+    "kaarmu/typst.vim",
     "tpope/vim-commentary",
     "tpope/vim-eunuch",
     { "repo": "moll/vim-bbye", "update": false }

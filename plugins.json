@@ -14,7 +14,6 @@
     "https://git.sr.ht/~reggie/synctex.nvim",
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     "https://gitlab.com/HiPhish/rainbow-delimiters.nvim",
-    "kaarmu/typst.vim",
     "kyazdani42/nvim-web-devicons",
     "lewis6991/gitsigns.nvim",
     "lvimuser/lsp-inlayhints.nvim",
