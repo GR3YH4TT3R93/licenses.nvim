@@ -139,28 +139,6 @@ vim.api.nvim_create_autocmd(
     }
 )
 
--- neodev.nvim
-lazy.register(
-    'neodev.nvim',
-    {
-        filetypes = { 'lua' },
-        modules = { 'neodev' },
-        setup = function()
-            require('neodev').setup({
-                library = {
-                    enabled = true,
-                    runtime = true,
-                    types = true,
-                    plugins = false,
-                },
-                setup_jsonls = true,
-                lspconfig = true,
-                pathStrict = true,
-            })
-        end,
-    }
-)
-
 -- nvim-code-action-menu
 lazy.register('nvim-code-action-menu', { commands = { 'CodeActionMenu' } })
 

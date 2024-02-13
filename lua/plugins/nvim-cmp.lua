@@ -57,6 +57,7 @@ local mapping_modes = { 'i', 'c', 's' }
 
 cmp.setup({
     enabled = true,
+    performance = { throttle = 500 },
     preselect = cmp.PreselectMode.None,
     mapping = {
         ['<C-l>'] = cmp.mapping.scroll_docs(-4),
