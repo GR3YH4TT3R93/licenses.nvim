@@ -16,6 +16,7 @@ Added
 =====
 
 - Public API function `is_enabled`
+- Rasi support
 - XML support
 - Missing patterns for Java:
    - `array_initializer`
@@ -30,13 +31,17 @@ Added
    - `parenthesized_expression`
    - `resource_specification`
    - `cast_expression`
+- Missing patterns for Go:
+   - `type_assertion_expression`
 - Missing patterns for Lua:
    - `field`
 - Missing patterns for Luadoc:
    - `indexed_field`
    - `tuple_type`
 - Missing patterns for Python:
+   - `dict_pattern`
    - `import_from_statement`
+   - `list_pattern`
    - `tuple_pattern`
 - Missing patterns for Rust:
    - `array_type`
