@@ -2527,8 +2527,7 @@ require'lspconfig'.denols.setup{}
   {
     ["textDocument/definition"] = <function 1>,
     ["textDocument/references"] = <function 1>,
-    ["textDocument/typeDefinition"] = <function 1>,
-    ["workspace/executeCommand"] = <function 2>
+    ["textDocument/typeDefinition"] = <function 1>
   }
   ```
   - `root_dir` : 
@@ -2693,7 +2692,7 @@ require'lspconfig'.docker_compose_language_service.setup{}
   ```
   - `root_dir` : 
   ```lua
-  root_pattern("docker-compose.yaml")
+  root_pattern("docker-compose.yaml", "docker-compose.yml", "compose.yaml", "compose.yml")
   ```
   - `single_file_support` : 
   ```lua
