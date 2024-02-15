@@ -82,6 +82,7 @@ cmp.setup({
             mapping_modes
         ),
         ['<C-n>'] = cmp.mapping(cmp_next, mapping_modes),
+        ['<Tab>'] = cmp.mapping(cmp_next, { 'c' }),
         ['<C-e>'] = cmp.mapping(cmp_prev, mapping_modes),
         -- check https://github.com/hrsh7th/cmp-path/issues/61
         ['<C-c><C-t>'] = cmp.mapping.complete({
@@ -151,5 +152,7 @@ cmp.setup.cmdline(
         ),
     }
 )
+
+cmp.setup.cmdline('@', { sources = get_sources('path') })
 
 cmp.setup.cmdline({ '/', '?' }, { sources = get_sources('buffer') })
