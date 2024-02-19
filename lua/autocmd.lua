@@ -1,5 +1,3 @@
--- TODO: set wrapmargin to cc on every resize
-
 for _, autocmd in ipairs({
     {
         'FileType',

@@ -123,6 +123,7 @@ local servers = {
                                     },
                                     ';'
                                 ) .. "'",
+                                '--disable=R1705',
                             },
                             enabled = true,
                         },
@@ -187,6 +188,7 @@ local servers = {
         },
     },
     { 'typst_lsp', { settings = { exportPdf = 'never' } } },
+    'zls'
 }
 
 local defaults = {
