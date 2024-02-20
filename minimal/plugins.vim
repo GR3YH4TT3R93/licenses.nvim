@@ -27,3 +27,6 @@ let matchup_matchparen_hi_surround_always=1
 let matchup_matchparen_offscreen=[]
 let matchup_matchparen_stopline=250
 let matchup_surround_enabled=1
+
+" zig.vim
+let zig_fmt_autosave=0

@@ -73,11 +73,13 @@ local servers = {
                             auto_collapse_lines = 'true',
                         },
                     },
-                    -- hint = disable,
                     hint = enable,
                     runtime = { version = 'LuaJIT', path = vim.o.path },
                     telemetry = disable,
-                    workspace = { library = api.nvim_get_runtime_file('', true) },
+                    -- filter this to exclude pack
+                    workspace = {
+                        library = api.nvim_get_runtime_file('lua/', true)
+                    },
                 },
             },
         },
@@ -188,7 +190,7 @@ local servers = {
         },
     },
     { 'typst_lsp', { settings = { exportPdf = 'never' } } },
-    'zls'
+    { 'zls', { settings = { enable_autofix = false } } },
 }
 
 local defaults = {
