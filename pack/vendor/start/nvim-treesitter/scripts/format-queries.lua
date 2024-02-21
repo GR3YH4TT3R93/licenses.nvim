@@ -6,13 +6,11 @@ local get_node_text = ts.get_node_text
 ---@type string[]
 local files
 
-if not _G.arg[1] then
-  print "Must specify file or directory to format!"
-  return
-elseif _G.arg[1]:match ".*%.scm$" then
-  files = { _G.arg[1] }
+local arg = _G.arg[1] or "."
+if arg:match ".*%.scm$" then
+  files = { arg }
 else
-  files = vim.fn.split(vim.fn.glob(_G.arg[1] .. "/**/*.scm"))
+  files = vim.fn.split(vim.fn.glob(arg .. "/**/*.scm"))
 end
 
 ts.query.add_predicate("has-type?", function(match, _, _, pred)
@@ -189,7 +187,7 @@ local format_queries = [[
 (anonymous_node (identifier) @format.keep)
 (field_definition
   name: (_)
-  ":" @format.indent.begin @format.append-newline ; surpress trailing whitespaces with forced newlines
+  ":" @format.indent.begin @format.append-newline ; suppress trailing whitespaces with forced newlines
   [
     (named_node [ (named_node) (list) (grouping) (anonymous_node) (field_definition) ])
     (list "[" . (_) . (_) "]")
@@ -206,7 +204,7 @@ local format_queries = [[
     (named_node)                  ; ((foo))
     (list)                        ; ([foo] (...))
     (anonymous_node)              ; ("foo")
-    (grouping . (anonymous_node)) ; (("foo"))
+    (grouping . (_))
   ] @format.indent.begin
   .
   (_))
@@ -222,6 +220,7 @@ local format_queries = [[
     (named_node)
     (list)
     (predicate)
+    (grouping . (_))
     "."
   ] @format.append-newline
   (_) .)
