@@ -78,7 +78,10 @@ local servers = {
                     telemetry = disable,
                     -- filter this to exclude pack
                     workspace = {
-                        library = api.nvim_get_runtime_file('lua/', true)
+                        library = vim.tbl_filter(
+                            function(s) return s:find("pack") == nil end,
+                            api.nvim_get_runtime_file('lua/', true)
+                        )
                     },
                 },
             },
