@@ -46,7 +46,7 @@ function! cursorword#setup() abort
     hi default CursorWord cterm=underline gui=underline
     augroup cursorword
         au!
-        au BufEnter,CursorMoved,CursorHold * call s:cursorword_add()
-        au BufLeave,WinLeave * call s:cursorword_delete()
+        au BufEnter,CursorMoved,CursorHold,InsertLeave * call s:cursorword_add()
+        au BufLeave,InsertEnter,WinLeave * call s:cursorword_delete()
     augroup end
 endfunction
