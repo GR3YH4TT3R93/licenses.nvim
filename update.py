@@ -6,12 +6,8 @@ import subprocess
 import sys
 
 
-def eprint(*args, **kwargs):
-    print(*args, **kwargs, file=sys.stderr)
-
-
 def git(args: list[str], **kwargs) -> subprocess.CompletedProcess:
-    if kwargs.get("check") == None:
+    if kwargs.get("check") is None:
         kwargs["check"] = True
 
     return subprocess.run(["git"] + args, **kwargs)
@@ -31,7 +27,7 @@ def parse_plugin(plugin) -> dict:
     return plugin
 
 
-def update(prefix):
+def update(prefix, no_pull: bool):
     with open(prefix + "plugins.json", "r", encoding="utf-8") as f:
         plugins = list(map(parse_plugin, json.load(f)))
 
@@ -48,9 +44,8 @@ def update(prefix):
 
             if not name in map(lambda p: p["name"], plugins):
                 name = prefix + "/" + name
-                eprint("removing " + name)
+                print("removing " + name, file=sys.stderr)
                 git(["rm", "-rf", name])
-                git(["add", "-u", name])
                 git(
                     [
                         "commit",
@@ -61,6 +56,20 @@ def update(prefix):
                 )
 
     for plugin in plugins:
+        path = prefix + "/" + plugin["name"]
+
+        if os.path.isdir(path):
+            if no_pull:
+                continue
+
+            if plugin.get("update") == False:
+                print(f"update disabled for {path}, skipping", file=sys.stderr)
+                continue
+
+            action = "pull"
+        else:
+            action = "add"
+
         branch = plugin.get("branch")
         if not branch:
             res = git(
@@ -74,16 +83,6 @@ def update(prefix):
                 .replace("refs/heads/", "", 1)
             )
 
-        path = prefix + "/" + plugin["name"]
-        if os.path.isdir(path):
-            if plugin.get("update") == False:
-                eprint(f"update disabled for {path}, skipping")
-                continue
-
-            action = "pull"
-        else:
-            action = "add"
-
         args = [
             "subtree",
             action,
@@ -96,7 +95,7 @@ def update(prefix):
             f"chore: update '{path}'",
         ]
 
-        eprint("running: git " + " ".join(args))
+        print("running: git " + " ".join(args), file=sys.stderr)
 
         git(args)
 
@@ -104,8 +103,18 @@ def update(prefix):
 def main() -> int:
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
+    no_pull = False
+
+    try:
+        no_pull = sys.argv[1] == "--no-pull"
+    except IndexError:
+        pass
+
     if git(["diff-index", "--quiet", "HEAD"], check=False).returncode:
-        eprint("working tree has modifications, first commit all your changes")
+        print(
+            "working tree has modifications, first commit all your changes",
+            file=sys.stderr,
+        )
         return 1
 
     base = git(
@@ -114,16 +123,18 @@ def main() -> int:
 
     update_branch = "update-plugins"
 
-    eprint("switching branch to " + update_branch)
+    print("switching branch to " + update_branch, file=sys.stderr)
     git(["switch", "-C", update_branch])
 
     try:
         for prefix in ("minimal/", ""):
-            update(prefix)
+            update(prefix, no_pull)
     except Exception as e:
-        eprint(e)
-        eprint(
-            "update failed with the above exception, switching back to " + base
+        print(e, file=sys.stderr)
+        print(
+            "update failed with the above exception, switching back to "
+            + base,
+            file=sys.stderr,
         )
         git(["switch", "-f", base])
 
@@ -134,7 +145,7 @@ def main() -> int:
         git(["add", "pack/vendor_minimal"])
         git(["commit", "-m", "chore: add symlink to minimal"])
 
-    eprint("switching back to " + base)
+    print("switching back to " + base, file=sys.stderr)
     git(["switch", base])
 
     if (
@@ -143,18 +154,21 @@ def main() -> int:
             ["rev-parse", update_branch], capture_output=True, text=True
         ).stdout
     ):
-        eprint("\nAll plugins are up to date, nothing to do")
+        print("\nAll plugins are up to date, nothing to do", file=sys.stderr)
     else:
-        eprint("\nTag before merge in case something goes wrong:\n")
+        print(
+            "\nTag before merge in case something goes wrong:\n",
+            file=sys.stderr,
+        )
         git(["show", "--oneline"])
-        eprint("\nPlugins updated, merging to apply changes")
+        print("\nPlugins updated, merging to apply changes", file=sys.stderr)
         git(["merge", update_branch])
 
-    eprint(f"\nDeleting {update_branch} branch")
+    print(f"\nDeleting {update_branch} branch", file=sys.stderr)
     git(["branch", "-D", update_branch])
 
     nvim_args = ["nvim", "--headless", "+helptags ALL", "+TSUpdateSync", "+q"]
-    eprint("\nRunning " + " ".join(nvim_args))
+    print("\nRunning " + " ".join(nvim_args), file=sys.stderr)
     subprocess.run(nvim_args, check=False)
 
     return 0
