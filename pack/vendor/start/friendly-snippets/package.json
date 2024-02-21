@@ -45,6 +45,10 @@
                 "path": "./snippets/csharp/csharpdoc.json"
             },
             {
+                "language": "editorconfig",
+                "path": "./snippets/editorconfig.json"
+            },
+            {
                 "language": ["gitcommit", "NeogitCommitMessage"],
                 "path": "./snippets/gitcommit.json"
             },
@@ -291,19 +295,23 @@
             },
             {
                 "language": "vue",
-                "path": "./snippets/frameworks/vue/nuxt_html.json"
+                "path": "./snippets/frameworks/vue/nuxt-html.json"
             },
             {
                 "language": "vue",
-                "path": "./snippets/frameworks/vue/nuxt_js_ts.json"
+                "path": "./snippets/frameworks/vue/nuxt-script.json"
             },
             {
                 "language": "vue",
-                "path": "./snippets/frameworks/vue/javascript.json"
+                "path": "./snippets/frameworks/vue/script.json"
             },
             {
                 "language": "vue",
                 "path": "./snippets/frameworks/vue/vue.json"
+            },
+            {
+                "language": "vue",
+                "path": "./snippets/frameworks/vue/style.json"
             },
             {
                 "language": "angular",
@@ -543,6 +551,10 @@
             {
                 "language": "dune",
                 "path": "./snippets/ocaml/dune.json"
+            },
+            {
+                "language": "purescript",
+                "path": "./snippets/purescript.json"
             }
         ]
     }
