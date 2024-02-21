@@ -49,7 +49,6 @@ def update(prefix, no_pull: bool):
                 git(
                     [
                         "commit",
-                        "--no-gpg-sign",
                         "-m",
                         f"Remove subtree '{name}'",
                     ]
