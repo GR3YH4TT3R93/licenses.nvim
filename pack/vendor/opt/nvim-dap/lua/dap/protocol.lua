@@ -46,6 +46,9 @@
 ---@field stopped nil|boolean not part of the spec; added by nvim-dap
 
 
+---@class dap.ThreadResponse
+---@field threads dap.Thread[]
+
 ---@class dap.StackFrame
 ---@field id number
 ---@field name string
@@ -58,6 +61,9 @@
 ---@field presentationHint nil|"normal"|"label"|"subtle";
 ---@field scopes? dap.Scope[] Not part of spec; added by nvim-dap
 
+---@class dap.StackTraceResponse
+---@field stackFrames dap.StackFrame[]
+---@field totalFrames? number
 
 ---@class dap.Scope
 ---@field name string
