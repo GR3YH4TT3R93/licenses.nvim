@@ -36,6 +36,7 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [x] `glimmer`
   - [x] `go`
   - [x] `graphql`
+  - [x] `groovy`
   - [x] `haskell`
   - [x] `html_tags`
   - [x] `ini`
@@ -68,6 +69,7 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [x] `scss`
   - [x] `smali`
   - [x] `solidity`
+  - [x] `svelte`
   - [x] `swift`
   - [x] `tcl`
   - [x] `teal`
@@ -80,6 +82,7 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [x] `usd`
   - [x] `verilog`
   - [x] `vim`
+  - [x] `vue`
   - [x] `xml`
   - [x] `yaml`
   - [x] `yang`
@@ -142,6 +145,7 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [ ] `ledger`
   - [ ] `llvm`
   - [ ] `m68k`
+  - [ ] `markdown_inline`
   - [ ] `menhir`
   - [ ] `mermaid`
   - [ ] `meson`
@@ -174,7 +178,6 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [ ] `starlark`
   - [ ] `supercollider`
   - [ ] `surface`
-  - [ ] `svelte`
   - [ ] `sxhkdrc`
   - [ ] `t32`
   - [ ] `thrift`
@@ -187,7 +190,6 @@ Note: if you need support for Neovim 0.6.x please use the tag `compat/0.6`.
   - [ ] `v`
   - [ ] `vala`
   - [ ] `vhs`
-  - [ ] `vue`
   - [ ] `wgsl`
   - [ ] `wgsl_bevy`
   - [ ] `yuck`
