@@ -18,7 +18,7 @@ git clone --depth 1 https://git.ash.fail/config.nvim \
         -maxdepth 1 \
         -not -path '*/pack' \
         -not -path '*/.*' \
-        -exec cp -rf {} ~/.vim/ \; \
-    && ln -sf ~/.vim/minimal/pack ~/.vim/pack \
+        -exec cp -rfv {} ~/.vim/ \; \
+    && ln -sfv ~/.vim/minimal/pack ~/.vim/pack \
     && echo "runtime minimal/init.vim" > ~/.vimrc
 ```

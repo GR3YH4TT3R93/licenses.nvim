@@ -2,16 +2,16 @@ local M = {}
 
 local api = vim.api
 
-local Callbacks = {}
-local Modules = {}
+local CALLBACKS = {}
+local MODULES = {}
 
 M.load = function(package)
-    local setup = Callbacks[package]
+    local setup = CALLBACKS[package]
     if setup
     then
         vim.cmd.packadd(package)
         setup()
-        Callbacks[package] = nil
+        CALLBACKS[package] = nil
     end
 end
 
@@ -26,7 +26,7 @@ M.register = function(package, opts)
         modules = { opts.modules, 'table', true },
     })
 
-    Callbacks[package] = opts.setup or function() end
+    CALLBACKS[package] = opts.setup or function() end
 
     for _, cmd in ipairs(opts.commands or {})
     do
@@ -44,12 +44,12 @@ M.register = function(package, opts)
         )
     end
 
-    for _, mod in ipairs(opts.modules or {}) do Modules[mod] = package end
+    for _, mod in ipairs(opts.modules or {}) do MODULES[mod] = package end
 end
 
 M.require = function(mod)
-    M.load(Modules[mod])
-    Modules[mod] = nil
+    M.load(MODULES[mod])
+    MODULES[mod] = nil
     return require(mod)
 end
 
