@@ -114,16 +114,17 @@ function! s:showmarks_callback(...) abort
     endfor
 endfunction
 
-function! s:showmarks() abort
+function! s:showmarks(...) abort
     if get(b:, 'showmarks_disable', get(g:, 'showmarks_disable'))
         return
     endif
 
+    call timer_stop(s:timer)
+
     let delay=get(g:, 'showmarks_delay', 500)
-    if delay == 0
+    if a:0 || delay == 0
         call s:showmarks_callback()
     else
-        call timer_stop(s:timer)
         let s:timer=timer_start(delay, 's:showmarks_callback')
     endif
 endfunction
@@ -155,6 +156,7 @@ function! showmarks#setup() abort
 
     augroup showmarks
         au!
-        au BufEnter,CursorHold,CursorMoved,ModeChanged * call s:showmarks()
+        au BufEnter,CursorHold,CursorMoved * call s:showmarks()
+        au ModeChanged * call s:showmarks(v:true)
     augroup end
 endfunction
