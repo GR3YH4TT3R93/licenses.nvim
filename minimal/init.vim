@@ -11,9 +11,11 @@ set backspace=indent,eol,start
 set backup
 if has('nvim')
     let &backupdir=stdpath('state') . '/backup'
+    let &undodir=stdpath('state') . '/undo'
 else
-    silent !mkdir -p ~/.vim/backup > /dev/null 2>&1
+    silent !mkdir -p ~/.vim/{backup,undo} > /dev/null 2>&1
     let &backupdir=expand('~/.vim/backup')
+    let &undodir=expand('~/.vim/undo')
 endif
 set colorcolumn=80
 set completeopt=menu,menuone,noselect,preview
