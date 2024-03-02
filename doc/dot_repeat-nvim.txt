@@ -1,0 +1,124 @@
+*dot_repeat-nvim.txt*
+
+Dot repeat vim commands and lua functions.
+
+                                                               *dot_repeat.nvim*
+
+  USAGE................................................|dot_repeat-nvim-usage|
+  RunOpts............................................|dot_repeat-nvim.RunOpts|
+  run....................................................|dot_repeat-nvim.run|
+  set_dot............................................|dot_repeat-nvim.set_dot|
+  MkCmdOpts........................................|dot_repeat-nvim.MkCmdOpts|
+  mk_cmd..............................................|dot_repeat-nvim.mk_cmd|
+
+==============================================================================
+USAGE                                                    *dot_repeat-nvim-usage*
+
+Pressing a |.| repeats the last action performed, this works great for default
+vim motions, but more effort needs to be put in to make it work with custom
+commands or functions. This module provides a few helper functions for this.
+
+It works by setting |'operatorfunc'| to our desired function and then executing
+it with the |g@| operator.
+
+For more information on how this works see:
+https://gist.github.com/kylechui/a5c1258cd2d86755f97b10fc921315c3.
+
+------------------------------------------------------------------------------
+dot_repeat-nvim.RunOpts                                *dot_repeat-nvim.RunOpts*
+
+Options passed to |dot_repeat-nvim.run| and |dot_repeat-nvim.set_dot|.
+
+Fields: ~
+    • {count} `(optional)` `(number)` Count passed to |g@| (default: 0)
+    • {motion} `(optional)` `(string)` Motion used with |g@| (default: `'l'`)
+    • {reset_cursor} `(optional)` `(boolean)`
+        Reset cursor after calling `callback` (default: false)
+
+------------------------------------------------------------------------------
+run({callback}, {args}, {opts})                            *dot_repeat-nvim.run*
+
+Set the dot to `callback` and execute it immediately.
+
+Example:~
+
+The example bellow will run `my_fn('hello')` and set |.| to it. The next time we
+press |.| the function will run with the same arguments and print `hello` again.
+>lua
+    local my_fn = function(msg)
+        print(msg)
+    end
+
+    require('dot_repeat').run(my_fn, { 'hello' })
+<
+Parameters: ~
+    • {callback} `(function)` The function to use
+    • {args} `(optional)` `(any[])` Arguments to pass to `callback`
+    • {opts} `(optional)` `(dot_repeat-nvim.RunOpts)` Additional options
+
+See: ~
+    • |dot_repeat-nvim.RunOpts|
+
+------------------------------------------------------------------------------
+set_dot({callback}, {args}, {opts})                    *dot_repeat-nvim.set_dot*
+
+Takes the same arguments as |dot_repeat-nvim.run|, but doesn't execute
+immediately and just sets the dot.
+
+Parameters: ~
+    • {callback} `(function)` The function to use
+    • {args} `(optional)` `(any[])` Arguments to pass to `callback`
+    • {opts} `(optional)` `(dot_repeat-nvim.RunOpts)` Additional options
+
+See: ~
+    • |dot_repeat-nvim.RunOpts|
+    • |dot_repeat-nvim.run|
+
+------------------------------------------------------------------------------
+dot_repeat-nvim.MkCmdOpts                            *dot_repeat-nvim.MkCmdOpts*
+
+Options passed to |dot_repeat-nvim.mk_cmd|.
+
+If the command needs to handle range or count, set `type` to `'range'` or `'count'`
+respectively.
+
+By default the mapping starts with `<CR>`, you can use `prefix` to change it to `:`
+for example.
+
+Fields: ~
+    • {type} `(optional)` `('normal' | 'count' | 'range')`
+        Command type (default: `'normal'`)
+    • {prefix} `(optional)` `(string)`
+        Prefix to prepend the command with (default: `'<CR>'`)
+
+------------------------------------------------------------------------------
+mk_cmd({cmd}, {opts})                                   *dot_repeat-nvim.mk_cmd*
+
+Make a command, that can be used as right side of a mapping.
+
+Take a user command and wrap it with a command that sets |.| to repeat it upon
+execution. The output should be used as a right side of a mapping.
+
+Example:~
+>lua
+    local dot_repeat = require('dot_repeat')
+
+    dot_repeat.mk_cmd('move .+1')
+    dot_repeat.mk_cmd('Commentary', { prefix = ':', type = 'range' })
+<
+In the above example the first call returns `'<Cmd>DotRepeatCmd move .+1<CR>'`
+and the second one `':DotRepeatCmdRange Commentary<CR>'`.
+
+The commands will call the command passed to them and then set the |.| to it.
+
+Parameters: ~
+    • {cmd} `(string)` User command
+    • {opts} `(optional)` `(dot_repeat-nvim.MkCmdOpts)` Additional options
+
+Return: ~
+    `(string)` Generated mapping
+
+See: ~
+    • |dot_repeat-nvim.MkCmdOpts|
+
+ vim:tw=78:ts=8:noet:ft=help:norl:
