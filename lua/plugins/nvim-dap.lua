@@ -31,7 +31,7 @@ dap.configurations.cpp = {
             then
                 vim.g.dap_executable = fn.input(
                     'Path to executable: ',
-                    fn.getcwd() .. '/',
+                    './',
                     'file'
                 )
             end
@@ -65,7 +65,7 @@ dap.configurations.rust = {
             then
                 vim.g.dap_executable = fn.input(
                     'Path to executable: ',
-                    fn.getcwd() .. '/',
+                    './',
                     'file'
                 )
             end

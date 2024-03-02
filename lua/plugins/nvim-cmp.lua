@@ -148,7 +148,9 @@ cmp.setup({
 cmp.setup.cmdline(
     ':', {
         sources = get_sources(
-            'path', { name = 'cmdline', option = { ignore_cmds = {} } }
+            'path',
+            { name = 'cmdline', option = { ignore_cmds = {} } },
+            'buffer'
         ),
     }
 )

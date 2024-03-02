@@ -76,11 +76,13 @@ local servers = {
                     hint = enable,
                     runtime = { version = 'LuaJIT', path = vim.o.path },
                     telemetry = disable,
-                    -- filter this to exclude pack
                     workspace = {
-                        library = vim.tbl_filter(
-                            function(s) return s:find("pack") == nil end,
-                            api.nvim_get_runtime_file('lua/', true)
+                        library = vim.list_extend(
+                            { vim.loop.cwd() .. '/lua' },
+                            vim.tbl_filter(
+                                function(s) return s:find('pack') == nil end,
+                                api.nvim_get_runtime_file('lua/', true)
+                            )
                         )
                     },
                 },
