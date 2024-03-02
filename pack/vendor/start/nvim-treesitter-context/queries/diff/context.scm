@@ -1,4 +1,0 @@
-([
-  (block)
-  (hunk)
-] @context)

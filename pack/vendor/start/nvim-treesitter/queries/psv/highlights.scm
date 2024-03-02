@@ -1,2 +1,0 @@
-; inherits: tsv
-"|" @punctuation.delimiter

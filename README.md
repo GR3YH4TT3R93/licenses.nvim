@@ -1,24 +1,35 @@
-# My personal Neovim config
+# licenses.nvim
 
-The `minimal/` directory contains a smaller Vim-compatible config, that I use
-on remote machines or setups where I don't need LSP.
+A plugin for easily writing license files and inserting license headers.
 
-Plugins are installed with `update.py` based on the contents of `plugins.json`
-and `minimal/plugins.json`.
+<a href="https://asciinema.org/a/587586" target="_blank"><img src="https://asciinema.org/a/587586.svg" /></a>
 
-Rest of the config is pretty self-explanatory, just follow the `require` calls
-in `init.lua` to find out more.
+# Setup
 
-## Minimal vim setup
+First install the plugin with your package manager of choice. Don't know what
+that is? Check out [Paq](https://github.com/savq/paq-nvim).
 
-```bash
-git clone --depth 1 https://git.ash.fail/config.nvim \
-    && mkdir -p ~/.vim \
-    && find config.nvim \
-        -maxdepth 1 \
-        -not -path '*/pack' \
-        -not -path '*/.*' \
-        -exec cp -rfv {} ~/.vim/ \; \
-    && ln -sfv ~/.vim/minimal/pack ~/.vim/pack \
-    && echo "runtime minimal/init.vim" > ~/.vimrc
+Inside your init.lua file run the following function:
+
+```lua
+require('licenses').setup({
+    copyright_holder = 'your name',
+    email = 'example@email.com',
+    license = 'your license of choice'
+})
 ```
+
+For more configuration options and in depth explanation run
+`:help licenses-nvim.Config`.
+
+# Usage
+
+-   LicenseInsert - insert a license on top of your current buffer
+-   LicenseFetch - fetch a license from spdx.org
+-   LicenseUpdate - update the date in your copyright notice
+-   LicenseWrite - write license text to a file
+
+# Documentation
+
+The documentation is in form of a vimdoc file, it contains much more
+information than this README, check it out by doing `:help licenses-nvim`.

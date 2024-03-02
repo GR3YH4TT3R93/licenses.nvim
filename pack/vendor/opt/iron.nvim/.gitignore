@@ -1,4 +1,0 @@
-*.py[eco]
-__pycache__/
-Makefile
-doc/tags

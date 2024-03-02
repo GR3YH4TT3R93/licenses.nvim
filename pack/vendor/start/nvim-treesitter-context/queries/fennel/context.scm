@@ -1,6 +1,0 @@
-([(list)
-  (sequential_table)
-  (table)
-  (set)
-  (fn)
-] @context)

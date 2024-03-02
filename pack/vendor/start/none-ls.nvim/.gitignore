@@ -1,5 +1,0 @@
-.tests/
-doc/tags
-
-# prettier cache
-node_modules/
