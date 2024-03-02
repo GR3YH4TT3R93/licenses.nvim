@@ -1,9 +1,9 @@
--- SPDX-FileCopyrightText: 2023 Ash <contact@ash.fail>
+-- SPDX-FileCopyrightText: 2023-2024 Ash <contact@ash.fail>
 -- SPDX-License-Identifier: MIT
 
 -- MIT License
 
---  Copyright (c) 2023 Ash contact@ash.fail
+--  Copyright (c) 2023-2024 Ash contact@ash.fail
 
 -- Permission is hereby granted, free of charge, to any person obtaining a copy
 -- of this software and associated documentation files (the "Software"), to

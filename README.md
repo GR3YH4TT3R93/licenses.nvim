@@ -33,9 +33,3 @@ For more configuration options and in depth explanation run
 
 The documentation is in form of a vimdoc file, it contains much more
 information than this README, check it out by doing `:help licenses-nvim`.
-
-# Issues
-
--   issue tracker: https://todo.sr.ht/~reggie/licenses.nvim
--   mailing list: https://lists.sr.ht/~reggie/licenses.nvim
--   contact me directly: https://ash.fail/contact.html
