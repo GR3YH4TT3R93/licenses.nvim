@@ -8,7 +8,7 @@
 ---
 --- If you have LuaSnip installed you can enable them with:
 --- ```lua
----     luasnip.loaders.from_lua').load()
+---     luasnip.loaders.from_lua.load()
 --- ```
 ---@see luasnip-loaders-lua for more options
 
