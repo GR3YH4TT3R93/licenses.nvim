@@ -222,7 +222,7 @@ local util = require('licenses/util')
 --- If true |licenses-nvim.insert| will set b:licenses_nvim_license to
 --- {config.license} making it the default for specified buffer (nil)
 ---@field skip_lines string[]
---- List of patterns to skip if at the top of buffer (nil)
+--- List of patterns to skip if at the top of buffer ({ '^#!' })
 ---@field use_license_header FnBool
 --- Insert license header, only inserts SPDX tags if false (true)
 ---@field vars LicenseVars Replacements for license variables ({})
@@ -234,9 +234,10 @@ M.config = {
     fallback_to_full_text = function(id)
         return vim.tbl_contains({ 'BSD-2-Clause', 'MIT', 'Unlicense' }, id)
     end,
+    skip_lines = { '^#!' },
     use_license_header = true,
-    wrap_width = function() return vim.bo.textwidth end,
     vars = {},
+    wrap_width = function() return vim.bo.textwidth end,
     write_license_to_file = false,
 }
 
