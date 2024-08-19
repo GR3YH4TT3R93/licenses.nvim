@@ -306,7 +306,7 @@ M.get_config = function(bufnr, overrides)
 
     if bufnr and c.remember_previous_id and c.license
     then
-        api.nvim_buf_set_var(bufnr, 'licenses_nvim_license', c.license)
+        vim.b[bufnr].licenses_nvim_license = c.license
     end
 
     return c

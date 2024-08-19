@@ -34,12 +34,15 @@ local previewers = require('telescope/previewers')
 local licenses = require('licenses')
 local util = require('licenses/util')
 
-local m = {}
+local M = {}
 
--- FIX: this one has poor performance for some reason
-m.insert = function(opts)
+M.insert = function(opts)
     local origin_bufnr = api.nvim_get_current_buf()
     local config = licenses.get_config(origin_bufnr)
+    local wltf = config.write_license_to_file
+    -- prevent writing license on selection
+    config.write_license_to_file = nil
+
     pickers.new(
         opts,
         {
@@ -49,12 +52,11 @@ m.insert = function(opts)
             ),
             sorter = require('telescope/config').values.generic_sorter(opts),
             attach_mappings = function(prompt_bufnr)
-                actions.select_default:replace(
-                    function()
-                        actions.close(prompt_bufnr)
-                        licenses.insert(origin_bufnr, 0, config)
-                    end
-                )
+                actions.select_default:replace(function()
+                    actions.close(prompt_bufnr)
+                    config.write_license_to_file = wltf
+                    licenses.insert(origin_bufnr, 0, config)
+                end)
                 return true
             end,
             previewer = previewers.new_buffer_previewer({
@@ -71,7 +73,7 @@ m.insert = function(opts)
     ):find()
 end
 
-m.pick = function(opts)
+M.pick = function(opts)
     local origin_bufnr = api.nvim_get_current_buf()
     local selection
     pickers.new(
@@ -83,14 +85,10 @@ m.pick = function(opts)
             ),
             sorter = require('telescope/config').values.generic_sorter(opts),
             attach_mappings = function(prompt_bufnr)
-                actions.select_default:replace(
-                    function()
-                        actions.close(prompt_bufnr)
-                        api.nvim_buf_set_var(
-                            origin_bufnr, 'licenses_nvim_license', selection
-                        )
-                    end
-                )
+                actions.select_default:replace(function()
+                    actions.close(prompt_bufnr)
+                    vim.b[origin_bufnr].licenses_nvim_license = selection
+                end)
                 return true
             end,
             previewer = previewers.new_buffer_previewer({
@@ -148,11 +146,11 @@ return require('telescope').register_extension({
             config = { config, 'table' },
             default_action = { config.default_action, 'string', true },
         })
-        m.default = m[config.default_action] or m.insert
+        M.default = M[config.default_action] or M.insert
     end,
     exports = {
-        ['licenses-nvim'] = function(...) m.default(...) end,
-        insert = m.insert,
-        pick = m.pick,
+        ['licenses-nvim'] = function(...) M.default(...) end,
+        insert = M.insert,
+        pick = M.pick,
     },
 })
