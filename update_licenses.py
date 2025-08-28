@@ -30,6 +30,7 @@ def main():
         "LGPL-3.0-or-later",
         "MIT",
         "MPL-2.0",
+        "PPL",
         "Unlicense",
     ):
         with urlopen(f"https://spdx.org/licenses/{v}.json") as f:
