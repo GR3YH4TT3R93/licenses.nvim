@@ -30,12 +30,19 @@ local core = require("licenses")
 local util = require("licenses/util")
 
 return function(bufnr, lnum, config)
-	vim.validate({
-		bufnr = { bufnr, "number" },
-		lnum = { lnum, "number" },
-		config = { config, "table" },
-		license = { config.license, { "function", "string" } },
-	})
+	if vim.fn.has("nvim-0.11") == 1 then
+		vim.validate("bufnr", bufnr, "number")
+		vim.validate("lnum", lnum, "number")
+		vim.validate("config", config, "table")
+		vim.validate("license", config.license, { "function", "string" })
+	else
+		vim.validate({
+			bufnr = { bufnr, "number" },
+			lnum = { lnum, "number" },
+			config = { config, "table" },
+			license = { config.license, { "function", "string" } },
+		})
+	end
 
 	local id = util.get_val(config.license)
 	config = vim.tbl_map(function(v)
